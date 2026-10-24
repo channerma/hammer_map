@@ -234,15 +234,15 @@ the Mac (on ORNL's network or VPN):
     git clone git@code-int.ornl.gov:71z/hammer-map.git
 
 GitHub too (operator, 2026-10-24: "push to github ... or both"). GitHub makes a repository only through its
-website or its API, and no GitHub token is kept here, so the operator makes an empty private repository
-`channerma/hammer-map` at https://github.com/new (no README, no licence); the same commits then go to its
-`main`, and `git clone git@github.com:channerma/hammer-map.git` works from any network.
+website or API, so the operator made the empty repository `channerma/hammer_map` (with an underscore) and the
+same commits went to its `main` the same afternoon. From any network:
+
+    git clone git@github.com:channerma/hammer_map.git
 
 Run it on the Mac as it is: `python3 -m http.server 8765` in the folder, then open `http://localhost:8765/`.
-Once work moves to the new repository, this folder is the older copy. Until then, a change made here reaches
-it with `git subtree split -q --prefix docs/fieldwork/rockhound` and a push of the printed commit to its
-`main` (the split is rebuilt from this folder's commits, so the hashes stay the same and the push is a
-fast-forward).
+From 2026-10-24 the two app repositories are the working copies and this folder is the older copy; it is not
+changed here any more, so the two never diverge. (It was split with `git subtree split -q --prefix
+docs/fieldwork/rockhound`, whose printed commit was pushed to both repositories' `main`.)
 
 Two common ways to turn a web app like this into an installed application; neither was tried here:
 - **Capacitor** (iOS and Android, from Xcode and Android Studio) wraps the web files in a native shell and
