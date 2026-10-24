@@ -271,6 +271,15 @@ so the app starts with no signal; the website at the repository root is unchange
 Needs: Xcode from the App Store (open it once to finish its setup) and Node 22 or newer
 (https://nodejs.org, or `brew install node`). No CocoaPods: the iOS project uses Swift Package Manager.
 
+`npm: command not found` means Node is not installed yet (check with `node --version`). Install it one of three ways:
+`brew install node` if Homebrew is there (`brew --version`); the macOS installer (LTS) from https://nodejs.org; or,
+without administrator rights, nvm in your home folder (Node 24 was the LTS release on 2026-10-24):
+
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+    source ~/.nvm/nvm.sh
+    nvm install 24
+    node --version
+
     git clone git@github.com:channerma/hammer_map.git    # or git pull in an existing clone
     cd hammer_map
     npm install
