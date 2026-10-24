@@ -1,0 +1,497 @@
+{
+  "meta": {
+    "built": "2026-10-24",
+    "disclaimer": "General guidance, not legal advice. Rules change and local closures apply: confirm with the office before you collect.",
+    "how_read": "Each source names the date it was read and how: 'fetcher' (the build tool's web reader), 'curl' (a direct download from the build machine, used where the site refused the web reader), or 'unverified' (the page refused every attempt; the rule says so and states nothing from it)."
+  },
+  "rules": {
+    "BLM": {
+      "title": "BLM public land (Bureau of Land Management)",
+      "who": "The BLM field office manages the surface and, where the mineral estate is federal, the minerals.",
+      "allowed": [
+        "Reasonable amounts of rocks, mineral specimens, semiprecious gemstones and common invertebrate fossils for personal, noncommercial use, without a permit or fee, outside developed recreation sites and where not posted closed (43 CFR 8365.1-5(b); BLM rockhounding page).",
+        "Hand tools, gold pans and metal detectors; the BLM Montana guide says power equipment and explosives may not be used except for woodcutting and certain dredging.",
+        "Petrified wood: up to 25 pounds plus one piece per day and 250 pounds per calendar year, no pooling, personal use only (43 CFR 3622.4).",
+        "Arizona BLM states its 'reasonable' limit as 25 pounds per day and 250 pounds per year for mineral specimens, common invertebrate fossils, gemstones, rock and petrified wood; other state offices publish their own figures."
+      ],
+      "not_allowed": [
+        "Selling or bartering what you collect (a permit or contract is needed for commercial collection, 43 CFR 8365.1-5(c)).",
+        "Developed recreation sites, areas posted closed, and land where the mineral estate is privately owned.",
+        "Minerals on an active mining claim without the claimant's permission.",
+        "Vertebrate fossils, uncommon invertebrate or plant fossils (permit only); artifacts, arrowheads, historic objects and sites; cave resources.",
+        "Wilderness and wilderness study areas: only hobby collecting without surface disturbance (BLM Montana guide); more restrictive rules in ACECs, national monuments and landmarks: ask first."
+      ],
+      "ask": "The local BLM field office (it can tell you if a spot is public land and whether a claim or closure applies).",
+      "verified": true,
+      "sources": [
+        { "title": "BLM: Rockhounding on Public Lands", "url": "https://www.blm.gov/programs/recreation/rockhounding", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "43 CFR 8365.1-5 Property and resources (LII copy; ecfr.gov refused the reader)", "url": "https://www.law.cornell.edu/cfr/text/43/8365.1-5", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "43 CFR 3622.4 Petrified wood collection rules", "url": "https://www.law.cornell.edu/cfr/text/43/3622.4", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "BLM Montana: Can I Keep This? A guide to collecting on public lands (BLM/MT/GI-11/007 rev. 2021)", "url": "https://www.blm.gov/sites/default/files/docs/2021-10/Can%20I%20Keep%20This%202021%20-%20508%20Final%20Version.pdf", "read": "2026-10-24", "how": "curl" },
+        { "title": "BLM Arizona: Rock Hounding in Arizona (BLM/AZ/GI-14/009)", "url": "https://www.blm.gov/sites/default/files/documents/files/2014%20Rockhounding_14_web_2018.pdf", "read": "2026-10-24", "how": "curl" }
+      ]
+    },
+    "USFS": {
+      "title": "National Forest or Grassland (US Forest Service)",
+      "who": "The ranger district. Forest Service policy allows rockhounding for personal, hobby and noncommercial use; most national forest land is open to it.",
+      "allowed": [
+        "Rocks, semiprecious stones and mineral specimens for personal, hobby, noncommercial use. The Forest Service provides for this 'through a free use permit' (FS-1091); Region 4 says the permit is free and allows small amounts for personal use. Many districts treat small hand collection as needing no paperwork: ask the district.",
+        "Low-impact activity with little surface disturbance (hand collection, gold panning, metal detecting) generally needs no plan of operations.",
+        "Common invertebrate and plant fossils: casual collecting without a permit where the land is not closed, up to 25 pounds a day and 100 pounds a calendar year, hand tools, negligible disturbance (36 CFR 291.5, 291.11).",
+        "Petrified wood in limited quantities for personal use under a free-use permit; free-use areas may be designated (36 CFR 228.62(e))."
+      ],
+      "not_allowed": [
+        "Selling or bartering specimens collected for hobby use; fossils collected casually cannot be sold.",
+        "Mechanical equipment, blasting; collection that conflicts with existing mineral permits, leases, claims or sales.",
+        "Artifacts and archaeological resources (36 CFR 261.9); meteorites.",
+        "National monuments, wilderness and other special areas: collecting may or may not be allowed, check with the district. East of the Mississippi, check in with the district before rockhounding or prospecting."
+      ],
+      "ask": "The local ranger district office (free-use permit, closures, district rules).",
+      "verified": true,
+      "sources": [
+        { "title": "USDA Forest Service: Rockhounding Guide FS-1091 (June 2017)", "url": "https://www.fs.usda.gov/media/229394", "read": "2026-10-24", "how": "fetcher (PDF text extracted)" },
+        { "title": "36 CFR 228.62 Free use (LII copy)", "url": "https://www.law.cornell.edu/cfr/text/36/228.62", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "36 CFR 291.5 Definitions (casual collecting, reasonable amount) (LII copy)", "url": "https://www.law.cornell.edu/cfr/text/36/291.5", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "36 CFR 291.11 Casual collecting on National Forest System lands (LII copy)", "url": "https://www.law.cornell.edu/cfr/text/36/291.11", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "Forest Service Region 4: Rock and mineral collecting", "url": "https://fs.usda.gov/r04/recreation/geologic-wonders/rock-and-mineral-collecting", "read": "2026-10-24", "how": "fetcher" }
+      ]
+    },
+    "NPS": {
+      "title": "National Park System unit (National Park Service)",
+      "who": "The park superintendent. The Organic Act directs the NPS to conserve all park resources, rocks and minerals included.",
+      "allowed": [
+        "Nothing in general. Narrow exceptions exist in a few units (some Alaska parks under 36 CFR 13.35; limited gold panning at Whiskeytown under 36 CFR 7.91; catlinite at Pipestone for American Indians)."
+      ],
+      "not_allowed": [
+        "Possessing, destroying, removing, digging or disturbing mineral resources, fossilized or nonfossilized paleontological specimens, cultural or archeological resources, cave formations, plants and wildlife (36 CFR 2.1(a)(1))."
+      ],
+      "ask": "The park (superintendent's office) or the NPS Geologic Resources Division.",
+      "verified": true,
+      "sources": [
+        { "title": "36 CFR 2.1 Preservation of natural, cultural and archeological resources (LII copy)", "url": "https://www.law.cornell.edu/cfr/text/36/2.1", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "NPS: Recreational collection of rocks and minerals, legal instruments", "url": "https://www.nps.gov/articles/recreational-collection-of-rocks-and-minerals-legal-instruments.htm", "read": "2026-10-24", "how": "fetcher" }
+      ]
+    },
+    "FWS": {
+      "title": "National Wildlife Refuge (US Fish and Wildlife Service)",
+      "who": "The refuge manager.",
+      "allowed": [
+        "Nothing unless the refuge authorizes it."
+      ],
+      "not_allowed": [
+        "Destruction, injury, defacement, disturbance or unauthorized removal of any public property, including natural objects, on or from any national wildlife refuge (50 CFR 27.61).",
+        "Casual fossil collecting under the Paleontological Resources Preservation Act applies only to BLM, Reclamation and Forest Service land, not refuges."
+      ],
+      "ask": "The refuge office.",
+      "verified": true,
+      "sources": [
+        { "title": "50 CFR 27.61 Destruction or removal of property (LII copy)", "url": "https://www.law.cornell.edu/cfr/text/50/27.61", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "16 U.S.C. 470aaa-3 Casual collecting exception (LII)", "url": "https://www.law.cornell.edu/uscode/text/16/470aaa-3", "read": "2026-10-24", "how": "fetcher" }
+      ]
+    },
+    "BOR": {
+      "title": "Bureau of Reclamation land",
+      "who": "The Reclamation area office (and often a managing partner around reservoirs).",
+      "allowed": [
+        "Casual collecting of common invertebrate and plant fossils without a permit, up to 25 pounds per day per person, hand tools, negligible disturbance (43 CFR 49.810; 16 U.S.C. 470aaa-3)."
+      ],
+      "not_allowed": [
+        "Vertebrate fossils without a permit; sale of fossils.",
+        "Rocks and minerals: no general Reclamation rule was found when this file was built. The Utah Geological Survey lists dam sites among lands where collecting is prohibited."
+      ],
+      "ask": "The Reclamation area office or the agency that manages recreation there.",
+      "verified": true,
+      "note": "Rock and mineral collecting on Reclamation land has no source on file: treat it as closed until the office says otherwise.",
+      "sources": [
+        { "title": "43 CFR 49.810 Casual collecting (LII copy)", "url": "https://www.law.cornell.edu/cfr/text/43/49.810", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "Utah Geological Survey PI-62a: Rockhound guide, land ownership", "url": "https://ugspub.nr.utah.gov/publications/public_information/pi-62a.pdf", "read": "2026-10-24", "how": "curl" }
+      ]
+    },
+    "DOD": {
+      "title": "Military land (Department of Defense, Army Corps of Engineers)",
+      "who": "The installation or the Corps district.",
+      "allowed": [],
+      "not_allowed": [
+        "Entering and collecting on military reservations: 'both illegal and dangerous' (Nevada Bureau of Mines and Geology); 'strictly prohibited' (Utah Geological Survey). Corps of Engineers project land has its own rules: ask the project office."
+      ],
+      "ask": "The installation's public affairs office or the Corps project office.",
+      "verified": true,
+      "sources": [
+        { "title": "Nevada Bureau of Mines and Geology: Rocks and Minerals (collecting)", "url": "https://nbmg.unr.edu/GeneralGeology/Rocks&Minerals.html", "read": "2026-10-24", "how": "curl (the reader rejected the site certificate)" },
+        { "title": "Utah Geological Survey PI-62a: Rockhound guide, land ownership", "url": "https://ugspub.nr.utah.gov/publications/public_information/pi-62a.pdf", "read": "2026-10-24", "how": "curl" }
+      ]
+    },
+    "TRIBAL": {
+      "title": "Tribal land (reservations, Bureau of Indian Affairs trust land)",
+      "who": "The tribal government.",
+      "allowed": [
+        "Only with the tribe's permission."
+      ],
+      "not_allowed": [
+        "Trespassing and collecting on reservations without permission from the tribal authorities (Nevada Bureau of Mines and Geology); collecting is 'strictly prohibited' on tribal lands (Utah Geological Survey)."
+      ],
+      "ask": "The tribe's natural resources or land office.",
+      "verified": true,
+      "sources": [
+        { "title": "Nevada Bureau of Mines and Geology: Rocks and Minerals (collecting)", "url": "https://nbmg.unr.edu/GeneralGeology/Rocks&Minerals.html", "read": "2026-10-24", "how": "curl" },
+        { "title": "Utah Geological Survey PI-62a: Rockhound guide, land ownership", "url": "https://ugspub.nr.utah.gov/publications/public_information/pi-62a.pdf", "read": "2026-10-24", "how": "curl" }
+      ]
+    },
+    "OTHER_FED": {
+      "title": "Other federal land (DOE, NRCS, USDA research, other agencies)",
+      "who": "The agency named on the map (for example the Department of Energy at Oak Ridge).",
+      "allowed": [],
+      "not_allowed": [],
+      "ask": "The managing agency's site office.",
+      "verified": false,
+      "note": "No general collecting rule on file for this agency. Treat the land as closed to collecting until the office says otherwise.",
+      "sources": []
+    },
+    "TVA": {
+      "title": "TVA public land (Tennessee Valley Authority)",
+      "who": "TVA Natural Resources (reservoir lands and shoreline).",
+      "allowed": [],
+      "not_allowed": [],
+      "ask": "TVA, through its Rules for Use of TVA Public Lands page and its public land information line.",
+      "verified": false,
+      "note": "TVA publishes 'Rules for Use of TVA Public Lands'. The page refused automated reading when this file was built (HTTP 403 on 2026-10-24), so no rule is stated here. Read it before collecting on TVA land; it is the authority for artifacts, metal detectors and natural materials on TVA land.",
+      "sources": [
+        { "title": "TVA: Rules for Use of TVA Public Lands", "url": "https://www.tva.com/environment/environmental-stewardship/land-management/rules-for-use-of-tva-public-lands", "read": "2026-10-24", "how": "unverified (403)", "verified": false }
+      ]
+    },
+    "STATE_TRUST_AZ": {
+      "title": "Arizona State Trust Land",
+      "who": "Arizona State Land Department (ASLD).",
+      "allowed": [
+        "Being on trust land at all needs an ASLD Recreational Use Permit (camping, hiking, travel), per the BLM Arizona pamphlet."
+      ],
+      "not_allowed": [
+        "Rockhounding and metal detecting on Arizona State Trust Land (BLM Arizona pamphlet: 'Rockhounding and metal detecting are not allowed on Arizona State Trust Land')."
+      ],
+      "ask": "Arizona State Land Department.",
+      "verified": true,
+      "note": "The ASLD permit terms page refused automated reading (403), so the statement comes from the BLM Arizona pamphlet.",
+      "sources": [
+        { "title": "BLM Arizona: Rock Hounding in Arizona (BLM/AZ/GI-14/009)", "url": "https://www.blm.gov/sites/default/files/documents/files/2014%20Rockhounding_14_web_2018.pdf", "read": "2026-10-24", "how": "curl" },
+        { "title": "ASLD: Recreational permit terms and conditions", "url": "https://land.az.gov/recreational-permit-terms-and-conditions", "read": "2026-10-24", "how": "unverified (403)", "verified": false }
+      ]
+    },
+    "STATE_TRUST_UT": {
+      "title": "Utah trust land (SITLA)",
+      "who": "School and Institutional Trust Lands Administration (SITLA).",
+      "allowed": [
+        "Rockhounding with SITLA's annual rockhounding permit (a fee is charged): up to 25 pounds plus one piece per person per day, 250 pounds per year, hand collection.",
+        "Lands of the Division of Forestry, Fire and State Lands: with the Division's permission (UGS PI-62a)."
+      ],
+      "not_allowed": [
+        "Collecting without the permit (trespass); commercial collection.",
+        "Land under an active mineral lease or active mining without the lessee's permission; land posted closed.",
+        "Other state agencies' land: state parks, sovereign lands, Division of Wildlife Resources and Department of Transportation land (collecting prohibited).",
+        "Vertebrate fossils, dinosaur tracks and artifacts (never without a permit, on state and federal land)."
+      ],
+      "ask": "SITLA (permit) and the Utah Geological Survey's collecting-rules page.",
+      "verified": true,
+      "note": "SITLA's own pages refused automated reading (403); the rule is taken from the Utah Geological Survey, a state agency.",
+      "sources": [
+        { "title": "Utah Geological Survey: Rock, Mineral and Fossil Collecting Rules", "url": "https://geology.utah.gov/popular/rocks-minerals/collecting-rules", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "Utah Geological Survey PI-62a: Rockhound guide, land ownership", "url": "https://ugspub.nr.utah.gov/publications/public_information/pi-62a.pdf", "read": "2026-10-24", "how": "curl" },
+        { "title": "SITLA rockhounding permit form", "url": "https://trustlands.utah.gov/wp-content/uploads/2023/08/2360-Rockhounding-Permit-5.24-Fillable.pdf", "read": "2026-10-24", "how": "unverified (403)", "verified": false }
+      ]
+    },
+    "STATE_TRUST_NV": {
+      "title": "Nevada state land",
+      "who": "Nevada Division of State Lands (very little trust land remains in state ownership).",
+      "allowed": [],
+      "not_allowed": [
+        "Nevada state parks: hobby collecting is not allowed (Nevada Bureau of Mines and Geology)."
+      ],
+      "ask": "Nevada Division of State Lands for state-owned parcels; the Nevada Division of Minerals for land status and claims.",
+      "verified": false,
+      "note": "No Division of State Lands collecting rule was found when this file was built. The NBMG page gives Nevada's general picture: hobby collecting on most public land except state and federal parks, recreation areas, wildlife refuges and wilderness; minerals on a valid claim belong to the claimant.",
+      "sources": [
+        { "title": "Nevada Bureau of Mines and Geology: Rocks and Minerals (collecting)", "url": "https://nbmg.unr.edu/GeneralGeology/Rocks&Minerals.html", "read": "2026-10-24", "how": "curl" }
+      ]
+    },
+    "STATE_TRUST_NM": {
+      "title": "New Mexico state trust land",
+      "who": "New Mexico State Land Office.",
+      "allowed": [
+        "Recreational access (hiking, sightseeing, picnicking, wildlife watching, photography) with a Recreational Access Permit or other written authorization from the Commissioner (19.2.19.9 NMAC)."
+      ],
+      "not_allowed": [
+        "Mineral exploration, development or mining, or collecting valuable rocks or minerals (19.2.19.18(A)(15) NMAC).",
+        "Disturbing or removing historical, archaeological, paleontological or cultural sites or artifacts (19.2.19.18(A)(3)).",
+        "Land under a business lease, or with oil and gas or mining operations, is not open to recreational access."
+      ],
+      "ask": "New Mexico State Land Office (permit) for anything beyond recreational access.",
+      "verified": true,
+      "sources": [
+        { "title": "19.2.19 NMAC Recreational access to state trust lands", "url": "https://srca.nm.gov/parts/title19/19.002.0019.html", "read": "2026-10-24", "how": "fetcher" }
+      ]
+    },
+    "STATE_TRUST_CO": {
+      "title": "Colorado state trust land",
+      "who": "Colorado State Land Board.",
+      "allowed": [
+        "Access only where a parcel is leased for public recreation (Colorado Parks and Wildlife access program) and only the uses that lease allows."
+      ],
+      "not_allowed": [
+        "Entering trust land in general: 'This land, called trust land, is not open to the public.' (State Land Board). No collecting rule is published; collecting is not among the allowed uses."
+      ],
+      "ask": "Colorado State Land Board, or Colorado Parks and Wildlife for a leased parcel's rules.",
+      "verified": true,
+      "sources": [
+        { "title": "Colorado State Land Board: Public access on trust land", "url": "https://slb.colorado.gov/public-access", "read": "2026-10-24", "how": "curl (the reader got 403)" }
+      ]
+    },
+    "STATE_TRUST_WY": {
+      "title": "Wyoming state trust land",
+      "who": "Office of State Lands and Investments (OSLI), Board of Land Commissioners Chapter 13 rules.",
+      "allowed": [
+        "Hunting, fishing and general recreational use of legally accessible trust land (Chapter 13, since 1988)."
+      ],
+      "not_allowed": [
+        "Off-road vehicle use, overnight camping, open fires; anything that damages the land, roads, improvements or a lessee's property; cultivated cropland.",
+        "Any use outside Chapter 13 needs a temporary use permit or special use lease. The FAQ does not address rock collecting: assume it needs OSLI's authorization."
+      ],
+      "ask": "OSLI, Cheyenne.",
+      "verified": true,
+      "note": "OSLI's FAQ does not mention collecting rocks, minerals or fossils; the rule above is what it does say.",
+      "sources": [
+        { "title": "Wyoming OSLI: Frequently asked questions (state trust land use)", "url": "https://lands.wyo.gov/resources/frequently-asked-questions", "read": "2026-10-24", "how": "fetcher" }
+      ]
+    },
+    "STATE_TRUST_OR": {
+      "title": "Oregon state land",
+      "who": "Department of State Lands (DSL) for state-owned uplands; Oregon Parks and Recreation for the ocean shore.",
+      "allowed": [
+        "ORS 273.715 directs DSL to make rules for semiprecious stones and petrified wood on state land that allow free noncommercial collection of reasonable quantities; a permit is needed for commercial removal or removal worth $500 or more.",
+        "Ocean shore: a small quantity of agates and other rocks, shells and fossils for personal use, at most a one-gallon container per person per day and three gallons per year, individual containers; hand-operated tools only (OAR 736-021-0090)."
+      ],
+      "not_allowed": [
+        "Digging up or removing sand, soil, rock, historical or fossil material on the ocean shore beyond the personal-use exception without written permission.",
+        "Motorized equipment for prospecting on the ocean shore."
+      ],
+      "ask": "DSL for a state-owned upland parcel (the DSL rules themselves were not found online when this file was built); the state park office for the shore.",
+      "verified": true,
+      "sources": [
+        { "title": "ORS 273.715 Rules for removal of semiprecious stones and petrified wood (oregon.public.law)", "url": "https://oregon.public.law/statutes/ors_273.715", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "OAR 736-021-0090 Cultural, historic, natural and wildlife resources on the ocean shore (LII copy)", "url": "https://www.law.cornell.edu/regulations/oregon/Or-Admin-Code-SS-736-021-0090", "read": "2026-10-24", "how": "fetcher" }
+      ]
+    },
+    "STATE_TRUST_ID": {
+      "title": "Idaho endowment land",
+      "who": "Idaho Department of Lands (IDL).",
+      "allowed": [
+        "Public recreation on legally accessible endowment land where it does not degrade the land, interfere with management or harm returns to the beneficiaries (Land Board policy; IDAPA 20.05.01)."
+      ],
+      "not_allowed": [
+        "Collecting valuable rocks or minerals without separate authorization from IDL (IDL recreation policy page: 'collecting valuable rocks or minerals require separate authorization from IDL')."
+      ],
+      "ask": "The IDL area office.",
+      "verified": true,
+      "sources": [
+        { "title": "Idaho Department of Lands: Recreation policy on endowment land", "url": "https://www.idl.idaho.gov/endowment-land-and-recreation/recreation-policy", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "IDAPA 20.05.01 Rules pertaining to the recreational use of endowment land", "url": "https://adminrules.idaho.gov/rules/current/20/200501.pdf", "read": "2026-10-24", "how": "curl" }
+      ]
+    },
+    "STATE_TRUST_CA": {
+      "title": "California state school land",
+      "who": "California State Lands Commission (about 460,000 acres remain, mostly in the desert).",
+      "allowed": [],
+      "not_allowed": [],
+      "ask": "California State Lands Commission.",
+      "verified": false,
+      "note": "No State Lands Commission collecting rule was found when this file was built. State parks have their own rule (see the California state park entry).",
+      "sources": []
+    },
+    "STATE_PARK_TN": {
+      "title": "Tennessee state park or state natural area",
+      "who": "Tennessee Department of Environment and Conservation, Division of State Parks.",
+      "allowed": [
+        "State parks: gathering small quantities of pebbles or small rocks by hand for personal use (Rule 0400-02-02-.18(4))."
+      ],
+      "not_allowed": [
+        "Collecting rocks for commercial sale or use; intentional destruction, defacement or removal of any natural feature or non-renewable natural resource without a scientific permit (0400-02-02-.18(1)).",
+        "Mineral or metal detectors (0400-02-02-.18(6)).",
+        "State natural areas: no removal of any natural material, product or object; a collecting permit is required for collecting in all areas (0400-02-08-.21)."
+      ],
+      "ask": "The park office; the Division of State Parks for a scientific collecting permit.",
+      "verified": true,
+      "sources": [
+        { "title": "Tenn. Comp. R. & Regs. 0400-02-02 Public use and recreation (Division of State Parks)", "url": "https://publications.tnsosfiles.com/rules/0400/0400-02/0400-02-02.pdf", "read": "2026-10-24", "how": "curl" },
+        { "title": "Tenn. Comp. R. & Regs. 0400-02-08 Management of Tennessee natural resource areas", "url": "https://publications.tnsosfiles.com/rules/0400/0400-02/0400-02-08.pdf", "read": "2026-10-24", "how": "curl" }
+      ]
+    },
+    "STATE_PARK_CA": {
+      "title": "California state park unit",
+      "who": "California Department of Parks and Recreation.",
+      "allowed": [
+        "Rockhounding only in units or portions posted open for it: at most 15 pounds of mineralogical material (or one specimen plus 15 pounds) per person per day per unit; in state recreation areas only beaches, wave-action zones and flood-prone gravel bars (14 CCR 4611).",
+        "Gold panning counts as rockhounding; a gold pan is the only tool allowed."
+      ],
+      "not_allowed": [
+        "Destroying, disturbing or removing earth, sand, gravel, minerals, rocks, paleontological features or cave features anywhere else (14 CCR 4307).",
+        "Tools other than gold pans; selling or commercial use; arrowheads, stone tools and other archaeological specimens."
+      ],
+      "ask": "The park unit (district orders can close units to rockhounding).",
+      "verified": true,
+      "sources": [
+        { "title": "14 CCR 4307 Geological features (LII copy)", "url": "https://www.law.cornell.edu/regulations/california/14-CCR-4307", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "14 CCR 4611 Rockhounding (LII copy)", "url": "https://www.law.cornell.edu/regulations/california/14-CCR-4611", "read": "2026-10-24", "how": "fetcher" }
+      ]
+    },
+    "STATE_PARK": {
+      "title": "State park (general)",
+      "who": "The state park agency.",
+      "allowed": [],
+      "not_allowed": [
+        "Collecting is prohibited in state parks in the states whose guidance was read (Utah, Nevada); Tennessee allows only small quantities of pebbles by hand and California only in posted units. Expect a prohibition unless the park says otherwise."
+      ],
+      "ask": "The park office.",
+      "verified": true,
+      "sources": [
+        { "title": "Utah Geological Survey PI-62a: Rockhound guide, land ownership", "url": "https://ugspub.nr.utah.gov/publications/public_information/pi-62a.pdf", "read": "2026-10-24", "how": "curl" },
+        { "title": "Nevada Bureau of Mines and Geology: Rocks and Minerals (collecting)", "url": "https://nbmg.unr.edu/GeneralGeology/Rocks&Minerals.html", "read": "2026-10-24", "how": "curl" }
+      ]
+    },
+    "STATE": {
+      "title": "Other state land (wildlife areas, state forests, trust land in a state not listed)",
+      "who": "The state agency named on the map (for example the Tennessee Wildlife Resources Agency for a WMA).",
+      "allowed": [],
+      "not_allowed": [],
+      "ask": "That agency's regional office. Choose a state below to see its trust-land rule if it is on file.",
+      "verified": false,
+      "note": "No rule on file for this agency: treat the land as closed to collecting until the office says otherwise.",
+      "sources": []
+    },
+    "LOCAL": {
+      "title": "City, county or regional land",
+      "who": "The city or county parks department or the district that owns it.",
+      "allowed": [],
+      "not_allowed": [],
+      "ask": "The owning department.",
+      "verified": false,
+      "note": "No general rule on file; local parks commonly prohibit removing natural materials. Ask first.",
+      "sources": []
+    },
+    "NGO": {
+      "title": "Private conservation land (land trust, nature conservancy)",
+      "who": "The owning organization.",
+      "allowed": [],
+      "not_allowed": [
+        "Collecting without the owner's permission: private land rules apply."
+      ],
+      "ask": "The organization's preserve manager.",
+      "verified": true,
+      "sources": [
+        { "title": "Utah Geological Survey PI-62a: private lands (owner's permission)", "url": "https://ugspub.nr.utah.gov/publications/public_information/pi-62a.pdf", "read": "2026-10-24", "how": "curl" }
+      ]
+    },
+    "PRIVATE": {
+      "title": "Private land",
+      "who": "The landowner (the county register of deeds or assessor's parcel map names the owner).",
+      "allowed": [
+        "Collecting only with the owner's permission, on the owner's terms."
+      ],
+      "not_allowed": [
+        "Entering or collecting without permission: 'On private land or land encumbered by mining claims, the collector must get the permission of the owner before removing any rocks or minerals' (Utah Geological Survey); 'One should always contact the owner before collecting on private property' (Nevada Bureau of Mines and Geology); 'Respect private property rights, and do not trespass' (Forest Service FS-1091)."
+      ],
+      "ask": "The owner. In Tennessee, criminal trespass is Tenn. Code 39-14-405 (its text could not be read automatically when this file was built).",
+      "verified": true,
+      "sources": [
+        { "title": "Utah Geological Survey PI-62a: Rockhound guide, land ownership", "url": "https://ugspub.nr.utah.gov/publications/public_information/pi-62a.pdf", "read": "2026-10-24", "how": "curl" },
+        { "title": "Nevada Bureau of Mines and Geology: Rocks and Minerals (collecting)", "url": "https://nbmg.unr.edu/GeneralGeology/Rocks&Minerals.html", "read": "2026-10-24", "how": "curl" },
+        { "title": "USDA Forest Service: Rockhounding Guide FS-1091", "url": "https://www.fs.usda.gov/media/229394", "read": "2026-10-24", "how": "fetcher (PDF text extracted)" },
+        { "title": "Tenn. Code 39-14-405 Criminal trespass (Justia)", "url": "https://law.justia.com/codes/tennessee/title-39/chapter-14/part-4/section-39-14-405/", "read": "2026-10-24", "how": "unverified (403)", "verified": false }
+      ]
+    },
+    "UNKNOWN": {
+      "title": "No managed-area record here",
+      "who": "Most likely a private owner; sometimes a gap in the data.",
+      "allowed": [
+        "Collecting only with the owner's permission."
+      ],
+      "not_allowed": [
+        "Assuming land with no record is public."
+      ],
+      "ask": "The county parcel map for the owner; a county parcel service can be added under Layers > Add a layer by URL.",
+      "verified": true,
+      "sources": [
+        { "title": "Utah Geological Survey PI-62a: private lands (owner's permission)", "url": "https://ugspub.nr.utah.gov/publications/public_information/pi-62a.pdf", "read": "2026-10-24", "how": "curl" }
+      ]
+    },
+    "CLAIM_ACTIVE": {
+      "title": "Active mining claim on this spot",
+      "who": "The claimant holds the right to develop and extract the locatable minerals (gold, silver, gemstones, most hard-rock minerals). The surface stays public land under the surface agency's rules.",
+      "allowed": [
+        "Being on the surface for recreation under the surface agency's rules: a mining claim 'does not include exclusive surface rights' (BLM)."
+      ],
+      "not_allowed": [
+        "Collecting minerals on the claim without the claimant's permission: 'Minerals found on mining claims belong to the claim holder and may not be collected without the claimant's permission' (BLM Montana guide); BLM's rockhounding page lists active mining claims among the places collection is generally not allowed.",
+        "Metal detecting for precious metals on a claim without the claimant's permission (Forest Service FS-1091)."
+      ],
+      "ask": "The claimant: look the serial number up in BLM's Mineral and Land Records System (MLRS) for the name and address.",
+      "verified": true,
+      "sources": [
+        { "title": "BLM: Mining claims (locatable minerals)", "url": "https://www.blm.gov/programs/energy-and-minerals/mining-and-minerals/locatable-minerals/mining-claims", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "BLM Montana: Can I Keep This? (rev. 2021)", "url": "https://www.blm.gov/sites/default/files/docs/2021-10/Can%20I%20Keep%20This%202021%20-%20508%20Final%20Version.pdf", "read": "2026-10-24", "how": "curl" },
+        { "title": "BLM: Rockhounding on Public Lands", "url": "https://www.blm.gov/programs/recreation/rockhounding", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "BLM Mineral and Land Records System (claimant lookup)", "url": "https://mlrs.blm.gov/s/", "read": "2026-10-24", "how": "link only" }
+      ]
+    },
+    "CLAIM_CLOSED": {
+      "title": "Claim closed within the past year",
+      "who": "BLM's record shows a claim here whose case closed in the past year; claims are mapped by legal description to the quarter section, so the outline is approximate.",
+      "allowed": [
+        "If the claim is truly closed, the land's own rules apply (see the manager's entry above)."
+      ],
+      "not_allowed": [
+        "Treating the closure as certain: the record can lag, a new claim can be staked on the same ground, and an adjoining active claim may overlap. Check MLRS."
+      ],
+      "ask": "BLM MLRS for the case status; the BLM field office.",
+      "verified": true,
+      "sources": [
+        { "title": "BLM MLRS Mining Claims - Closed (past year) feature service description", "url": "https://nlsdbpubgis.blm.gov/arcgishub/rest/services/HUB/BLM_Natl_MLRS_Mining_Claims_Closed/FeatureServer/0", "read": "2026-10-24", "how": "curl" }
+      ]
+    },
+    "FOSSILS_FEDERAL": {
+      "title": "Fossils on BLM, Forest Service and Reclamation land (Paleontological Resources Preservation Act)",
+      "who": "The surface agency, under 16 U.S.C. 470aaa and its regulations.",
+      "allowed": [
+        "Casual collecting of a reasonable amount of common invertebrate and plant fossils for noncommercial personal use, by surface collection or non-powered hand tools, with negligible disturbance, where the land is open to it.",
+        "BLM and Reclamation: at most 25 pounds per day per person (43 CFR 49.810). Forest Service: at most 25 pounds per day and 100 pounds per calendar year (36 CFR 291.5)."
+      ],
+      "not_allowed": [
+        "Vertebrate fossils (dinosaurs, mammals, fish, reptiles), and invertebrate or plant fossils the agency has determined are not common: permit only.",
+        "Selling fossils collected casually; collecting in National Park System units and wildlife refuges (not covered by the casual-collecting exception)."
+      ],
+      "ask": "The field office or ranger district (local limits, closures and which fossils count as common).",
+      "verified": true,
+      "sources": [
+        { "title": "16 U.S.C. 470aaa Definitions (casual collecting) (LII)", "url": "https://www.law.cornell.edu/uscode/text/16/470aaa", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "16 U.S.C. 470aaa-3 Casual collecting exception (LII)", "url": "https://www.law.cornell.edu/uscode/text/16/470aaa-3", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "43 CFR 49.810 Casual collecting (LII copy)", "url": "https://www.law.cornell.edu/cfr/text/43/49.810", "read": "2026-10-24", "how": "fetcher" },
+        { "title": "36 CFR 291.5 Definitions (LII copy)", "url": "https://www.law.cornell.edu/cfr/text/36/291.5", "read": "2026-10-24", "how": "fetcher" }
+      ]
+    },
+    "WILDERNESS": {
+      "title": "Wilderness or wilderness study area",
+      "who": "The surface agency (BLM or Forest Service) under its wilderness rules.",
+      "allowed": [
+        "BLM: 'Only hobby collecting is allowed in wilderness and wilderness study areas and must not involve surface disturbance' (BLM Montana guide; the Nevada Bureau of Mines and Geology says the same)."
+      ],
+      "not_allowed": [
+        "Any surface disturbance; motorized or mechanized equipment.",
+        "Forest Service wilderness: collecting 'may or may not be allowed' (FS-1091): ask the ranger district first."
+      ],
+      "ask": "The field office or ranger district for the wilderness unit.",
+      "verified": true,
+      "sources": [
+        { "title": "BLM Montana: Can I Keep This? (rev. 2021)", "url": "https://www.blm.gov/sites/default/files/docs/2021-10/Can%20I%20Keep%20This%202021%20-%20508%20Final%20Version.pdf", "read": "2026-10-24", "how": "curl" },
+        { "title": "USDA Forest Service: Rockhounding Guide FS-1091", "url": "https://www.fs.usda.gov/media/229394", "read": "2026-10-24", "how": "fetcher (PDF text extracted)" },
+        { "title": "Nevada Bureau of Mines and Geology: Rocks and Minerals (collecting)", "url": "https://nbmg.unr.edu/GeneralGeology/Rocks&Minerals.html", "read": "2026-10-24", "how": "curl" }
+      ]
+    }
+  }
+}

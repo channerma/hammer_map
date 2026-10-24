@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Hammer Map</title>
+<meta name="description" content="Fieldwork map for rock and mineral collecting: land ownership, mining claims, collecting rules, offline maps.">
+<meta name="theme-color" content="#1b3a2a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/5.24.0/maplibre-gl.css" crossorigin="anonymous">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="map" role="application" aria-label="Map"></div>
+
+<header id="topbar">
+  <div class="brand"><img src="icons/icon.svg" alt="" width="26" height="26"> Hammer Map</div>
+  <div id="status" class="pill">loading</div>
+</header>
+
+<nav id="tools" aria-label="Map tools">
+  <button id="btn-locate" class="tool" title="My location" aria-label="My location">&#x25CE;</button>
+  <button id="btn-layers" class="tool" title="Layers" aria-label="Layers">&#x2630;</button>
+  <button id="btn-legend" class="tool" title="What the pins mean" aria-label="What the pins mean">?</button>
+  <button id="btn-terrain" class="tool" title="3D terrain" aria-label="3D terrain">3D</button>
+  <button id="btn-draw" class="tool" title="Draw a line" aria-label="Draw a line">&#x2571;</button>
+  <button id="btn-pin" class="tool" title="Add a pin here" aria-label="Add a pin here">+</button>
+  <button id="btn-offline" class="tool" title="Offline maps" aria-label="Offline maps">&#x2B73;</button>
+  <button id="btn-menu" class="tool" title="Pins, lines, settings" aria-label="Pins, lines, settings">&#x22EF;</button>
+</nav>
+
+<div id="drawbar" hidden>
+  <span id="draw-hint">Tap the map to add points</span>
+  <button id="draw-undo" class="btn">Undo</button>
+  <button id="draw-done" class="btn primary">Done</button>
+  <button id="draw-cancel" class="btn">Cancel</button>
+</div>
+
+<section id="sheet" class="sheet" hidden aria-live="polite">
+  <div class="handle" aria-hidden="true"></div>
+  <div class="sheet-head"><h2 id="sheet-title"></h2><button id="sheet-close" class="tool small" aria-label="Close">&#x2715;</button></div>
+  <div id="sheet-body"></div>
+</section>
+
+<div id="toasts" aria-live="polite"></div>
+<input type="file" id="file-import" accept=".gpx,.kml,.json,application/gpx+xml,application/vnd.google-earth.kml+xml,application/json" hidden>
+<input type="file" id="file-photo" accept="image/*" capture="environment" hidden>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/5.24.0/maplibre-gl.js" crossorigin="anonymous"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
