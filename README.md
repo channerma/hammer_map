@@ -226,22 +226,23 @@ repository of its own (next section). The `gh-pages` branch stays as it is.
 The operator's request (2026-10-24): "git commit and push all the code for me to build this on a new repo
 that I'll open on a macbook pro, so I can build it as an application, I'll figure out where to host later."
 
-The branch `hammer-map` on both remotes (`github.com/channerma/orchestrate` and
-`code-int.ornl.gov/71z/orchestrate`) holds this folder's files at its root with their history, made with
-`git subtree split --prefix docs/fieldwork/rockhound -b hammer-map`. To start the new repository on the Mac,
-make an empty repository on GitHub or GitLab (no README, no licence), then:
+The app has its own repository, holding only this folder's files and their history: the private project
+https://code-int.ornl.gov/71z/hammer-map (branch `main`), created on 2026-10-24 by pushing the output of
+`git subtree split --prefix docs/fieldwork/rockhound` to it. Nothing of the rest of orchestrate is in it. On
+the Mac (on ORNL's network or VPN):
 
-    git clone --branch hammer-map --single-branch git@github.com:channerma/orchestrate.git hammer-map
-    cd hammer-map
-    git checkout -b main
-    git remote rename origin orchestrate
-    git remote add origin NEW-REPOSITORY-URL
-    git push -u origin main
+    git clone git@code-int.ornl.gov:71z/hammer-map.git
+
+GitHub too (operator, 2026-10-24: "push to github ... or both"). GitHub makes a repository only through its
+website or its API, and no GitHub token is kept here, so the operator makes an empty private repository
+`channerma/hammer-map` at https://github.com/new (no README, no licence); the same commits then go to its
+`main`, and `git clone git@github.com:channerma/hammer-map.git` works from any network.
 
 Run it on the Mac as it is: `python3 -m http.server 8765` in the folder, then open `http://localhost:8765/`.
-To refresh the branch after a change here: delete the local `hammer-map` branch, split again, and push it
-to both remotes with `--force` (the split is rebuilt from this folder's commits, so its hashes stay the same
-for the same history).
+Once work moves to the new repository, this folder is the older copy. Until then, a change made here reaches
+it with `git subtree split -q --prefix docs/fieldwork/rockhound` and a push of the printed commit to its
+`main` (the split is rebuilt from this folder's commits, so the hashes stay the same and the push is a
+fast-forward).
 
 Two common ways to turn a web app like this into an installed application; neither was tried here:
 - **Capacitor** (iOS and Android, from Xcode and Android Studio) wraps the web files in a native shell and
