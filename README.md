@@ -4,17 +4,10 @@ A fieldwork web app for collecting rocks and minerals: mark spots on a phone, se
 collecting is allowed, with maps that work when there is no signal. Plain HTML, CSS and JavaScript (no build step,
 no server of our own), installable as a progressive web app from any static host.
 
-## The request
+**Open it:** https://channerma.github.io/hammer_map/ (served by GitHub Pages from this repository's `main`).
+On a phone, open that address and choose "Add to Home Screen" to install it.
 
-The operator, 2026-10-24:
-
-> "I want to make an app, so when I do fieldwork I can mark locations and know land ownership and permissions on
-> collecting rocks and minerals.
-
-Same day, a second requirement:
-
-> "I'd like it to be performant and utilize the best ways for displaying maps quickly and efficiently, while limiting
-> how much data is kept on the users phone at any one time."
+![Hammer Map: land ownership around Oak Ridge, Tennessee](screenshots/01-map-ownership-oak-ridge.png)
 
 ## What it does
 
@@ -33,7 +26,7 @@ Same day, a second requirement:
 | **Import and export.** GPX and KML in (waypoints, tracks, routes, placemarks; parsed in a Web Worker), GPX and KML out, JSON backup and restore (photos optional). Nothing leaves the phone unless exported. | Settings sheet |
 | **Data on this phone.** A meter from the app's own accounting and `navigator.storage.estimate()`, a cache budget (150 MB default), trim and clear buttons. | [08](screenshots/08-settings-data-on-this-phone.png) |
 | **Design.** Phone first: full-screen map, bottom sheet, 48 px targets, light and dark themes with strong contrast, miles / feet / °F. | [09](screenshots/09-dark-theme.png) |
-| **Add a layer by URL.** An ArcGIS MapServer/FeatureServer or a WMS endpoint (county parcel services differ by county; the operator is in Tennessee where most land is private). | Layers sheet |
+| **Add a layer by URL.** An ArcGIS MapServer/FeatureServer or a WMS endpoint (county parcel services differ by county, so none is built in). | Layers sheet |
 
 GPS: the "locate" button uses the browser's geolocation with an accuracy circle and a heading arrow where the device
 offers one. Browsers allow geolocation, the service worker and camera capture only on **https** (or localhost).
@@ -138,14 +131,16 @@ city/county land, Tennessee WMAs. Those entries say "ask" and state no rule.
 
 ## Run it locally, host it
 
-- Local: `uv run python -m http.server 8765 --directory docs/fieldwork/rockhound` then open `http://localhost:8765/`
+- **On a computer:** in this folder run `python3 -m http.server 8765`, then open `http://localhost:8765/`
   (localhost counts as secure, so GPS and the service worker work).
-- GitHub Pages: publish the `docs/fieldwork/rockhound` folder (or copy it to a `gh-pages` branch); the site is https,
-  so GPS, the camera and offline mode all work. The app uses relative paths and runs from any subfolder.
-- Any static host (Netlify, Cloudflare Pages, an S3 bucket behind https, a web server): copy the folder. Only https
-  (or localhost) gives geolocation, camera capture and the service worker.
-- Install: open it in Chrome/Safari on the phone and "Add to Home Screen". The shell, MapLibre, the rules file and
-  every tile seen or downloaded are then served by the service worker when there is no signal.
+- **GitHub Pages:** in this repository, Settings, Pages, "Build and deployment": Source "Deploy from a branch",
+  Branch `main`, folder `/ (root)`, Save. About a minute later the app is at
+  https://channerma.github.io/hammer_map/. The `.nojekyll` file tells Pages to serve the files as they are. The app
+  uses relative paths and a `./` service-worker scope, so it runs from that subpath.
+- **Any static host** (Netlify, Cloudflare Pages, an S3 bucket behind https, a web server): copy the folder. Only
+  https (or localhost) gives geolocation, camera capture and the service worker.
+- **Install:** open it in Chrome or Safari on the phone and choose "Add to Home Screen". The shell, MapLibre, the
+  rules file and every tile seen or downloaded are then served by the service worker when there is no signal.
 
 ## Files
 
@@ -160,7 +155,7 @@ lines and profiles · `js/terrain.js` terrarium decoding · `js/io.js` + `worker
 
 ## What was verified and how
 
-Headless Chromium 156 through Playwright 1.64 (`uv run --no-project --with playwright`), phone viewport 390×844 at
+Headless Chromium 156 through Playwright 1.64, phone viewport 390×844 at
 2×, software GL, against `http.server` on 127.0.0.1:8765, on 2026-10-24 (runs between 14:52 and 15:09 UTC, the times `date` printed at the start and end of the runs):
 
 - Loads with **no console errors and no page errors**. The only warnings are Chromium's software-GL "GPU stall" notes
@@ -205,47 +200,18 @@ Headless Chromium 156 through Playwright 1.64 (`uv run --no-project --with playw
 - `http.server` serves uncompressed files; a real host with gzip or brotli will transfer the shell in well under
   100 KB.
 
-## Deployed on GitHub Pages (2026-10-24)
+## Build it as an application
 
-The operator's choice ("use Github pages"). The branch `gh-pages` of `github.com/channerma/orchestrate`
-holds this folder's files at its root (made with `git subtree split --prefix docs/fieldwork/rockhound
--b gh-pages`, plus a `.nojekyll` file) and is served at https://channerma.github.io/orchestrate/ once
-Pages is enabled in the repository's settings (Settings, Pages, source "Deploy from a branch",
-branch `gh-pages`, folder `/`). The app uses relative paths and a `./` scope, so the subpath works.
-To redeploy after a change here: `git subtree split --prefix docs/fieldwork/rockhound -b gh-pages`
-(delete the old branch first), add `.nojekyll`, `git push github gh-pages`.
-
-Pages could not be switched on from the operator's account (operator, 2026-10-24), so the app moved to a
-repository of its own (next section). The `gh-pages` branch stays as it is.
-
-## Its own repository, to build as an application (2026-10-24)
-
-The operator's request (2026-10-24): "git commit and push all the code for me to build this on a new repo
-that I'll open on a macbook pro, so I can build it as an application, I'll figure out where to host later."
-
-The app has its own repository, holding only this folder's files and their history: the private project
-https://code-int.ornl.gov/71z/hammer-map (branch `main`), created on 2026-10-24 by pushing the output of
-`git subtree split --prefix docs/fieldwork/rockhound` to it. Nothing of the rest of orchestrate is in it. On
-the Mac (on ORNL's network or VPN):
-
-    git clone git@code-int.ornl.gov:71z/hammer-map.git
-
-GitHub too (operator, 2026-10-24: "push to github ... or both"). GitHub makes a repository only through its
-website or API, so the operator made the empty repository `channerma/hammer_map` (with an underscore) and the
-same commits went to its `main` the same afternoon. From any network:
-
-    git clone git@github.com:channerma/hammer_map.git
-
-Run it on the Mac as it is: `python3 -m http.server 8765` in the folder, then open `http://localhost:8765/`.
-From 2026-10-24 the two app repositories are the working copies and this folder is the older copy; it is not
-changed here any more, so the two never diverge. (It was split with `git subtree split -q --prefix
-docs/fieldwork/rockhound`, whose printed commit was pushed to both repositories' `main`.)
-
-Two common ways to turn a web app like this into an installed application; neither was tried here:
-- **Capacitor** (iOS and Android, from Xcode and Android Studio) wraps the web files in a native shell and
-  offers native GPS, camera and file plugins. It copies a web folder into the native project, so move the
-  web files into a folder of their own (for example `www/`) and name it as `webDir` in its config.
+Two common ways to turn a web app like this into an installed application; neither has been tried yet:
+- **Capacitor** (iPhone and Android, built in Xcode and Android Studio) wraps the web files in a native shell and
+  offers native GPS, camera and file plugins. It copies a web folder into the native project, so move the web files
+  into a folder of their own (for example `www/`) and name it as `webDir` in its config.
 - **Tauri** or **Electron** make a macOS desktop application from the same files; Tauri's is the smaller.
-Check first whether the service worker (the tile cache and offline mode) runs inside an iOS app's web view:
-Apple limits service workers there to app-bound domains, so this may need setup or a native tile cache. Test
-offline mode and storage on a physical phone, which was not done here (see the limits above).
+
+Check first whether the service worker (the tile cache and offline mode) runs inside an iPhone app's web view:
+Apple limits service workers there to app-bound domains, so this may need setup or a native tile cache. Test offline
+mode and storage on a physical phone, which has not been done yet (see the limits above).
+
+## History
+
+Written in October 2026 inside a larger research project and moved here, with its history, on 2026-10-24.
