@@ -207,3 +207,13 @@ Headless Chromium 156 through Playwright 1.64 (`uv run --no-project --with playw
   after weeks of non-use; export a backup before long trips).
 - `http.server` serves uncompressed files; a real host with gzip or brotli will transfer the shell in well under
   100 KB.
+
+## Deployed on GitHub Pages (2026-10-24)
+
+The operator's choice ("use Github pages"). The branch `gh-pages` of `github.com/channerma/orchestrate`
+holds this folder's files at its root (made with `git subtree split --prefix docs/fieldwork/rockhound
+-b gh-pages`, plus a `.nojekyll` file) and is served at https://channerma.github.io/orchestrate/ once
+Pages is enabled in the repository's settings (Settings, Pages, source "Deploy from a branch",
+branch `gh-pages`, folder `/`). The app uses relative paths and a `./` scope, so the subpath works.
+To redeploy after a change here: `git subtree split --prefix docs/fieldwork/rockhound -b gh-pages`
+(delete the old branch first), add `.nojekyll`, `git push github gh-pages`.
