@@ -1,7 +1,7 @@
 """Headless Chromium: switch to each basemap of js/basemaps.js, count its tiles and errors, check keys, overlay, offline sheet.
 
 Run from the repository root (needs uv and a network):
-    uv run --no-project --with playwright==1.64.0 --with pillow python -I tests/basemaps_browser.py . /tmp/basemaps_out
+    uv run --no-project --with playwright==1.64.0 --with pillow==11.3.0 python -I tests/basemaps_browser.py . /tmp/basemaps_out
 (first time: uv run --no-project --with playwright==1.64.0 playwright install chromium)
 """
 import io, json, subprocess, sys, time
