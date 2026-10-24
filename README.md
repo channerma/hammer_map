@@ -9,15 +9,12 @@ no server of our own), installable as a progressive web app from any static host
 The operator, 2026-10-24:
 
 > "I want to make an app, so when I do fieldwork I can mark locations and know land ownership and permissions on
-> collecting rocks and minerals. Kind of like onX hunting app. Or this one I just found. Here are screenshots of the
-> things I'd like it to have."
+> collecting rocks and minerals.
 
 Same day, a second requirement:
 
 > "I'd like it to be performant and utilize the best ways for displaying maps quickly and efficiently, while limiting
 > how much data is kept on the users phone at any one time."
-
-The three screenshots listed the features and the pin legend reproduced below.
 
 ## What it does
 
