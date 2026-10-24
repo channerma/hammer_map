@@ -3,7 +3,7 @@
 
 export const APP_NAME = 'Hammer Map';
 export const APP_VERSION = '0.1.0';
-export const SW_VERSION = 'v2';
+export const SW_VERSION = 'v3';
 
 export const MAPLIBRE = {
   js: 'https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/5.24.0/maplibre-gl.js',

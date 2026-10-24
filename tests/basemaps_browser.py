@@ -16,7 +16,7 @@ POLL = "() => new Promise((r) => { const t0 = Date.now(); const f = () => { cons
 IDLE = "() => new Promise((r) => { const t = setTimeout(() => r('timeout'), 25000); hmMap.once('idle', () => { clearTimeout(t); r('idle'); }); })"
 def colors(png):
     im = Image.open(io.BytesIO(png)).convert("RGB").resize((128, 128))
-    return len(set(im.get_flattened_data()))
+    return len(im.getcolors(128 * 128))
 errors = []
 try:
     with sync_playwright() as p:
@@ -31,9 +31,11 @@ try:
         for k in ["padus", "smaWest", "claimsOpen", "claimsClosed"]:
             pg.evaluate(f"() => hmActions.setLayer('{k}', false)")
         shown = pg.evaluate("async () => (await import('./js/basemaps.js')).SHOWN_BASEMAPS.map((b) => ({ id: b.id, key: b.key || null }))")
+        builtin = pg.evaluate("async () => (await import('./js/keys.js')).BUILTIN_KEYS.carto")
+        print('built-in CARTO key set:', bool(builtin))
         rows = []
         for bm in shown:
-            if bm["key"]:
+            if bm["key"] and not builtin:
                 continue
             ll = "[106.70, 10.78]" if bm["id"] == "hcmc-onemap" else "[-84.27, 36.01]"
             z = 6 if bm["id"] == "esri-physical" else 12
@@ -53,12 +55,13 @@ try:
         pg.evaluate("() => { hmActions.setBasemap('esri-imagery'); hmActions.setLayer('places', true); hmMap.jumpTo({ center: [-84.27, 36.01], zoom: 11 }); }")
         print("overlay", pg.evaluate(IDLE), "tiles", pg.evaluate("() => __t['bm-esri-places'] || 0"), "errors", pg.evaluate("() => __e.filter((e) => e.src === 'bm-esri-places').length"))
         (out / "imagery-places.png").write_bytes(pg.locator("#map").screenshot())
-        # CARTO key path (a made-up key: only the URL is checked, CARTO is not asked to accept it)
+        # A person's own CARTO key (made up: only the URL is checked) replaces the built-in one; removing it brings the
+        # built-in one back, or no key when the site has none.
         print("carto before", pg.evaluate("() => hmMap.getSource('bm-carto-light').tiles[0]"))
         pg.evaluate("() => hmActions.setKey('carto', 'TESTKEY123')")
         print("carto with key", pg.evaluate(POLL.replace('WANT(u)', "u.includes('key=')")), "| state", pg.evaluate("() => hmState.keys"))
         pg.evaluate("() => hmActions.setKey('carto', '')")
-        print("carto removed", pg.evaluate(POLL.replace('WANT(u)', "!u.includes('key=')")), "| state", pg.evaluate("() => hmState.keys"))
+        print("carto removed", pg.evaluate(POLL.replace('WANT(u)', "!u.includes('TESTKEY123') && (u.includes('key=') === BUILTIN)").replace('BUILTIN', 'true' if builtin else 'false')), "| state", pg.evaluate("() => hmState.keys"))
         # offline: an online-only basemap is not planned
         pg.evaluate("() => hmOffline.openSheet()")
         pg.wait_for_selector(".offline", timeout=10000)

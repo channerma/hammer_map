@@ -1,12 +1,12 @@
 // Service worker: the app shell (stale-while-revalidate) and every map tile (cache-first with network fallback).
 // Tile bytes are recorded in IndexedDB (hammermap-cache.tiles) so the page can keep the cache under its budget.
 // Feature queries (ArcGIS, PBDB) are not cached here: the page keeps those in its own IndexedDB feature cache.
-const VERSION = 'v2';
+const VERSION = 'v3';
 const SHELL = `hm-shell-${VERSION}`;
 const TILES = 'hm-tiles-v1';
 const MAPLIBRE = ['https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/5.24.0/maplibre-gl.js', 'https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/5.24.0/maplibre-gl.css'];
 const SHELL_FILES = ['./', 'index.html', 'style.css', 'manifest.webmanifest', 'rules.json', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
-  'js/app.js', 'js/config.js', 'js/basemaps.js', 'js/util.js', 'js/db.js', 'js/cachebudget.js', 'js/terrain.js', 'js/style.js', 'js/features.js', 'js/map.js',
+  'js/app.js', 'js/config.js', 'js/basemaps.js', 'js/keys.js', 'js/util.js', 'js/db.js', 'js/cachebudget.js', 'js/terrain.js', 'js/style.js', 'js/features.js', 'js/map.js',
   'js/collect.js', 'js/pins.js', 'js/draw.js', 'js/io.js', 'js/offline.js', 'js/ui.js', 'js/panels.js', 'workers/parse.js', ...MAPLIBRE];
 const TILE_HOSTS = ['basemap.nationalmap.gov', 's3.amazonaws.com', 'tiles.openfreemap.org', 'tiles.arcgis.com', 'gis.blm.gov', 'mapservices.weather.noaa.gov'];
 

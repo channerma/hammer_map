@@ -28,6 +28,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Map keys from repository secrets (js/keys.js stays empty when no secret is set)
+        env:
+          CARTO_KEY: ${{ secrets.CARTO_KEY }}
+        run: node scripts/write-keys.mjs .
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll

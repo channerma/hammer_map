@@ -3,6 +3,8 @@
 // machine on 2026-10-24. The README ("More basemaps") lists all 33 HCMGIS services and why some are not shown.
 // They are online only: their terms were not checked for bulk download, so offline areas skip them and the
 // service worker does not keep their tiles. Credits are each Esri service's own copyrightText.
+import { BUILTIN_KEYS } from './keys.js';
+
 const ESRI = 'https://server.arcgisonline.com/arcgis/rest/services/';
 const OSM = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors';
 const ESRI_HERE = 'Esri, HERE, Garmin, (c) OpenStreetMap contributors, and the GIS user community';
@@ -12,9 +14,10 @@ const esri = (id, name, path, maxzoom, credit) => ({
   attribution: `Powered by <a href="https://www.esri.com" target="_blank">Esri</a> · ${credit}`,
 });
 // CARTO answers every tile without a key with an "API KEY REQUIRED" picture. The key is free for non-commercial use
-// (carto.com/basemaps/apikey); each person pastes their own in Settings and it goes only to CARTO, as ?key=.
+// (carto.com/basemaps/apikey) and goes only to CARTO, as ?key=. The site's key comes from js/keys.js, filled at deploy
+// from a secret; a key saved in Settings replaces it on that phone.
 const carto = (id, name, path) => ({
-  id, name, group: 'CARTO (needs a free key)', url: `https://a.basemaps.cartocdn.com/${path}/{z}/{x}/{y}.png`, maxzoom: 20, key: 'carto',
+  id, name, group: BUILTIN_KEYS.carto ? 'CARTO' : 'CARTO (needs a free key)', url: `https://a.basemaps.cartocdn.com/${path}/{z}/{x}/{y}.png`, maxzoom: 20, key: 'carto',
   attribution: `${OSM} &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>`,
 });
 // Switched off: these addresses answer, but the providers' terms allow their tiles only through their own APIs
@@ -53,5 +56,7 @@ export const SHOWN_BASEMAPS = EXTRA_BASEMAPS.filter((b) => !b.off);
 export const PLACES_OVERLAY = esri('esri-places', 'Place names and boundaries (Esri)', 'Reference/World_Boundaries_and_Places', 16, ESRI_HERE);
 
 export const extraBasemap = (id) => SHOWN_BASEMAPS.find((b) => b.id === id);
-export const usable = (b, keys) => !b.key || !!keys?.[b.key];
-export const basemapTiles = (b, keys) => (b.key && keys?.[b.key] ? `${b.url}?key=${encodeURIComponent(keys[b.key])}` : b.url);
+export const hasBuiltinKey = (name) => !!BUILTIN_KEYS[name];
+const keyFor = (b, keys) => keys?.[b.key] || BUILTIN_KEYS[b.key];
+export const usable = (b, keys) => !b.key || !!keyFor(b, keys);
+export const basemapTiles = (b, keys) => (b.key && keyFor(b, keys) ? `${b.url}?key=${encodeURIComponent(keyFor(b, keys))}` : b.url);

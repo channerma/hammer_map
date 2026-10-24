@@ -1,7 +1,7 @@
 // Layers panel (with live badges), the pin legend, settings with the storage meter, and the record sheets.
 import { PIN_TYPES, PADUS_LABELS, PADUS_COLORS, SMA_LABELS, SMA_COLORS, pinIconDataUrl } from './style.js';
 import { BUILTIN_BASEMAPS } from './map.js';
-import { SHOWN_BASEMAPS, usable } from './basemaps.js';
+import { SHOWN_BASEMAPS, usable, hasBuiltinKey } from './basemaps.js';
 import { APP_NAME, APP_VERSION, LIVE_TTL } from './config.js';
 import { fmtBytes, fmtDate, esc, h, $ } from './util.js';
 import { openSheet, toast } from './ui.js';
@@ -29,7 +29,7 @@ function basemapPicker(state) {
   const groups = new Map([['OpenFreeMap and USGS (these can be saved offline)', Object.entries(BUILTIN_BASEMAPS).map(([k, v]) => chip(k, v, k === 'vector' && !state.hasVector))]]);
   for (const b of SHOWN_BASEMAPS) groups.set(b.group, [...(groups.get(b.group) || []), chip(b.id, b.name, !usable(b, state.keys))]);
   const html = [...groups].map(([g, chips]) => `<p class="muted">${esc(g)}</p><div class="row wrap">${chips.join('')}</div>`).join('');
-  return `${html}<p class="muted">The Esri, CARTO and other maps come from the list in the HCMGIS QGIS plugin. They work online only, and offline areas do not save them. CARTO's need a free key: Settings and data.</p>`;
+  return `${html}<p class="muted">The Esri, CARTO and other maps come from the list in the HCMGIS QGIS plugin. They work online only, and offline areas do not save them.${hasBuiltinKey('carto') ? '' : " CARTO's need a free key: Settings and data."}</p>`;
 }
 
 export function openLayers(state, actions) {
@@ -86,8 +86,8 @@ export async function openSettings(state, actions) {
     <div class="row wrap"><label>Cache budget <select name="cap">${[50, 100, 150, 250, 500, 1000].map((mb) => `<option value="${mb}"${Math.round(r.cap / 1048576) === mb ? ' selected' : ''}>${mb} MB</option>`).join('')}</select></label>
       <button class="btn" data-act="evict">Trim to budget now</button><button class="btn" data-act="clear">Clear browsing cache</button></div>
     <h3>Basemap keys</h3>
-    <p class="muted">CARTO's basemaps need a free key for non-commercial use (up to 5 million tiles a month). Request one at <a href="https://carto.com/basemaps/apikey" target="_blank" rel="noopener">carto.com/basemaps/apikey</a> and paste it here. It stays on this phone and is sent only to CARTO.</p>
-    <div class="row"><input name="cartoKey" class="grow" placeholder="CARTO key" autocomplete="off" value="${esc(state.keys?.carto || '')}"><button class="btn" data-act="savekey">Save</button></div>
+    <p class="muted">${hasBuiltinKey('carto') ? 'Hammer Map has a CARTO key built in, free for non-commercial use up to 5 million tiles a month across everyone using it. To use your own instead,' : "CARTO's basemaps need a free key for non-commercial use (up to 5 million tiles a month). To use them,"} request one at <a href="https://carto.com/basemaps/apikey" target="_blank" rel="noopener">carto.com/basemaps/apikey</a> and paste it here. It stays on this phone and is sent only to CARTO.</p>
+    <div class="row"><input name="cartoKey" class="grow" placeholder="${hasBuiltinKey('carto') ? 'Your own CARTO key (optional)' : 'CARTO key'}" autocomplete="off" value="${esc(state.keys?.carto || '')}"><button class="btn" data-act="savekey">Save</button></div>
     <h3>Appearance</h3>
     <div class="row wrap">${['auto', 'light', 'dark'].map((t) => `<label class="chip"><input type="radio" name="theme" value="${t}"${state.theme === t ? ' checked' : ''}> ${t}</label>`).join('')}</div>
     <p class="muted">Units: miles, feet, degrees Fahrenheit.</p>
@@ -105,7 +105,7 @@ export async function openSettings(state, actions) {
     const act = e.target.dataset.act; if (!act) return;
     if (act === 'evict') { const x = await enforceBudget(); toast(`Evicted ${x.evicted} items (${fmtBytes(x.bytes)})`); openSettings(state, actions); }
     if (act === 'clear') { const n = await clearBrowsedCache(); toast(`Cleared ${n} cached items`); openSettings(state, actions); }
-    if (act === 'savekey') { await actions.setKey('carto', $('[name=cartoKey]', body).value); toast(state.keys.carto ? 'CARTO key saved on this phone' : 'CARTO key removed'); }
+    if (act === 'savekey') { await actions.setKey('carto', $('[name=cartoKey]', body).value); toast(state.keys.carto ? 'CARTO key saved on this phone' : hasBuiltinKey('carto') ? 'Your CARTO key removed; the built-in one is used' : 'CARTO key removed'); }
     if (act === 'import') actions.importFile();
     if (act === 'gpx') actions.exportGpx();
     if (act === 'kml') actions.exportKml();

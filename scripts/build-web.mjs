@@ -4,6 +4,7 @@
 import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { writeKeys } from './write-keys.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const OUT = join(ROOT, 'www');
@@ -22,6 +23,9 @@ FILES.forEach((f) => cpSync(join(ROOT, f), join(OUT, f), { recursive: true }));
 ['maplibre-gl.js', 'maplibre-gl.css'].forEach((f) =>
   cpSync(join(ROOT, 'node_modules', 'maplibre-gl', 'dist', f), join(OUT, VENDOR, f)));
 
+// A key in the CARTO_KEY variable goes into www/js/keys.js only; the repository's js/keys.js stays empty.
+const keys = process.env.CARTO_KEY ? writeKeys(OUT) : [];
+
 const code = walk(OUT).filter((p) => ['.html', '.js'].includes(extname(p)) && !p.includes(VENDOR));
 const rewritten = code.filter((p) => {
   const s = readFileSync(p, 'utf8');
@@ -33,4 +37,4 @@ if (left.length) {
   console.error(`build: a CDN address is still in ${left.join(', ')}; the app would need a signal to start`);
   process.exit(1);
 }
-console.log(`build: www/ holds ${walk(OUT).length} files; MapLibre bundled, CDN addresses rewritten in ${rewritten.length} files`);
+console.log(`build: www/ holds ${walk(OUT).length} files; MapLibre bundled, CDN addresses rewritten in ${rewritten.length} files; keys set: ${keys.join(', ') || 'none'}`);

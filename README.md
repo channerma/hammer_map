@@ -111,10 +111,11 @@ the result.
   Minh City only. Esri Boundaries and Places is transparent, so it is the overlay "Place names and boundaries on top".
   Credits are each Esri service's own `copyrightText`. Each maximum zoom is the deepest level that returned real tiles
   over Oak Ridge; MapLibre enlarges the last level beyond it.
-- **Shown once you add a key: 3.** CARTO Light, Dark and Voyager answer every request without a key with an "API KEY
+- **Shown when a key is set: 3.** CARTO Light, Dark and Voyager answer every request without a key with an "API KEY
   REQUIRED" picture (21:12 UTC). CARTO's page offers a free key for non-commercial use, up to 5 million requests a
-  month, added to each tile address as `?key=` (21:13 UTC). Request one at https://carto.com/basemaps/apikey and paste
-  it in Settings and data, under Basemap keys. It stays on the phone and goes only to CARTO.
+  month, added to each tile address as `?key=` (21:13 UTC). A key reaches the app in one of two ways (see "Map keys"):
+  the site's own key, a repository secret written into `js/keys.js` when the site deploys; or a person's own key,
+  pasted in Settings and data under Basemap keys, which stays on that phone and replaces the site's.
 - **In the list but switched off: 5.** Google Maps, Google Satellite, Google Satellite Hybrid, Google Terrain Hybrid
   and Bing Virtual Earth answer, but the providers' terms allow these tiles only through their own APIs with a key
   ([Google Maps Platform terms](https://cloud.google.com/maps-platform/terms)). To show one anyway, delete its `off`
@@ -137,7 +138,25 @@ the service worker does not keep their tiles.
 
 How it was checked: `tests/basemaps_browser.py` serves the repository locally, switches to each basemap, waits for the
 map to settle and counts tiles and errors per source. It also checks the overlay, that a saved CARTO key reaches the
-tile address and is removed again, and that the offline sheet skips an online-only basemap.
+tile address and is removed again, and that the offline sheet skips an online-only basemap. Run it twice: on the
+repository as it is (no built-in key), and on a copy whose `js/keys.js` holds the key (`CARTO_KEY=the-key
+node scripts/write-keys.mjs COPY`), where the CARTO chips must be on and a person's key must replace the built-in one.
+
+### Map keys
+
+No key is in the repository or its history: `js/keys.js` is committed empty. A key is written into it only where the
+site or the app is built:
+- **The website.** In GitHub, the repository's Settings, Secrets and variables, Actions, New repository secret: name
+  `CARTO_KEY`, value the key. The Pages workflow (`.github/workflows/jekyll-gh-pages.yml`) runs
+  `node scripts/write-keys.mjs .` on its own checkout before Jekyll, so the deployed `js/keys.js` holds it. It takes
+  effect at the next deploy: push a commit, or Actions, the Pages workflow, Run workflow. With no secret the file stays
+  empty and the CARTO chips stay off until a person adds a key in Settings.
+- **The iPhone app.** `CARTO_KEY=the-key npm run ios` (or `npm run build`) writes it into `www/js/keys.js` only.
+- **Each phone.** Settings and data, Basemap keys: a person's own key, kept on that phone, used instead of the site's.
+
+A key the website uses is readable by anyone who opens the site, since the browser sends it with every tile. CARTO's
+page says its dashboard shows each key's use this month and can add restrictions to a key (read 21:46 UTC), so watch
+its use there. Never run `write-keys.mjs` on your own clone of the repository: `js/keys.js` there must stay empty.
 
 ## The rules file
 
@@ -175,10 +194,10 @@ city/county land, Tennessee WMAs. Those entries say "ask" and state no rule.
 
 - **On a computer:** in this folder run `python3 -m http.server 8765`, then open `http://localhost:8765/`
   (localhost counts as secure, so GPS and the service worker work).
-- **GitHub Pages:** in this repository, Settings, Pages, "Build and deployment": Source "Deploy from a branch",
-  Branch `main`, folder `/ (root)`, Save. About a minute later the app is at
-  https://channerma.github.io/hammer_map/. The `.nojekyll` file tells Pages to serve the files as they are. The app
-  uses relative paths and a `./` service-worker scope, so it runs from that subpath.
+- **GitHub Pages:** the workflow `.github/workflows/jekyll-gh-pages.yml` deploys every push to `main` (Settings,
+  Pages, Source "GitHub Actions"); about a minute later the app is at https://channerma.github.io/hammer_map/. It
+  also writes the site's map keys from the repository's secrets ("Map keys"). The app uses relative paths and a `./`
+  service-worker scope, so it runs from that subpath.
 - **Any static host** (Netlify, Cloudflare Pages, an S3 bucket behind https, a web server): copy the folder. Only
   https (or localhost) gives geolocation, camera capture and the service worker.
 - **Install:** open it in Chrome or Safari on the phone and choose "Add to Home Screen". The shell, MapLibre, the
@@ -190,7 +209,8 @@ city/county land, Tennessee WMAs. Those entries say "ask" and state no rule.
 tiles cache-first with byte accounting) · `rules.json` · `js/config.js` URLs and limits · `js/util.js` tile maths,
 geodesy, units · `js/db.js` IndexedDB · `js/cachebudget.js` accounting, LRU eviction, the storage report ·
 `js/style.js` the MapLibre style and runtime pin icons · `js/features.js` data-tile fetching with abort and caching ·
-`js/map.js` map, basemaps, terrain, GPS · `js/basemaps.js` the basemaps from the HCMGIS list · `js/collect.js` identify and the rules panel · `js/pins.js` · `js/draw.js`
+`js/map.js` map, basemaps, terrain, GPS · `js/basemaps.js` the basemaps from the HCMGIS list · `js/keys.js` map keys,
+empty in the repository and written at deploy by `scripts/write-keys.mjs` · `js/collect.js` identify and the rules panel · `js/pins.js` · `js/draw.js`
 lines and profiles · `js/terrain.js` terrarium decoding · `js/io.js` + `workers/parse.js` GPX/KML in a worker, backup ·
 `js/offline.js` area downloads · `js/panels.js` layers, legend, settings, record sheets · `js/ui.js` sheet and toasts ·
 `js/app.js` wiring.
@@ -256,6 +276,9 @@ Needs: Xcode from the App Store (open it once to finish its setup) and Node 22 o
     npm install
     npm run ios:add    # once: makes the ios/ project and adds the location, camera and photo prompts
     npm run ios        # copies the web app into the project and opens Xcode
+
+For the CARTO basemaps, give the key on that line: `CARTO_KEY=the-key npm run ios`. It goes into `www/` only, never
+into the repository ("Map keys").
 
 In Xcode:
 1. In the left column click **App** (the blue icon), then the **App** target, then **Signing & Capabilities**.
