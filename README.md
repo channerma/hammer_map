@@ -217,3 +217,37 @@ Pages is enabled in the repository's settings (Settings, Pages, source "Deploy f
 branch `gh-pages`, folder `/`). The app uses relative paths and a `./` scope, so the subpath works.
 To redeploy after a change here: `git subtree split --prefix docs/fieldwork/rockhound -b gh-pages`
 (delete the old branch first), add `.nojekyll`, `git push github gh-pages`.
+
+Pages could not be switched on from the operator's account (operator, 2026-10-24), so the app moved to a
+repository of its own (next section). The `gh-pages` branch stays as it is.
+
+## Its own repository, to build as an application (2026-10-24)
+
+The operator's request (2026-10-24): "git commit and push all the code for me to build this on a new repo
+that I'll open on a macbook pro, so I can build it as an application, I'll figure out where to host later."
+
+The branch `hammer-map` on both remotes (`github.com/channerma/orchestrate` and
+`code-int.ornl.gov/71z/orchestrate`) holds this folder's files at its root with their history, made with
+`git subtree split --prefix docs/fieldwork/rockhound -b hammer-map`. To start the new repository on the Mac,
+make an empty repository on GitHub or GitLab (no README, no licence), then:
+
+    git clone --branch hammer-map --single-branch git@github.com:channerma/orchestrate.git hammer-map
+    cd hammer-map
+    git checkout -b main
+    git remote rename origin orchestrate
+    git remote add origin NEW-REPOSITORY-URL
+    git push -u origin main
+
+Run it on the Mac as it is: `python3 -m http.server 8765` in the folder, then open `http://localhost:8765/`.
+To refresh the branch after a change here: delete the local `hammer-map` branch, split again, and push it
+to both remotes with `--force` (the split is rebuilt from this folder's commits, so its hashes stay the same
+for the same history).
+
+Two common ways to turn a web app like this into an installed application; neither was tried here:
+- **Capacitor** (iOS and Android, from Xcode and Android Studio) wraps the web files in a native shell and
+  offers native GPS, camera and file plugins. It copies a web folder into the native project, so move the
+  web files into a folder of their own (for example `www/`) and name it as `webDir` in its config.
+- **Tauri** or **Electron** make a macOS desktop application from the same files; Tauri's is the smaller.
+Check first whether the service worker (the tile cache and offline mode) runs inside an iOS app's web view:
+Apple limits service workers there to app-bound domains, so this may need setup or a native tile cache. Test
+offline mode and storage on a physical phone, which was not done here (see the limits above).
