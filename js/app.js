@@ -1,7 +1,8 @@
 // Boot and wiring: settings, map, layers, pins, lines, offline, panels, service worker.
 import { DEFAULTS, URLS, LIVE_TTL, APP_NAME } from './config.js';
 import { settings, areas } from './db.js';
-import { createMap, setBasemap, setTerrain, makeLocator } from './map.js';
+import { BASEMAPS, createMap, setBasemap, setBasemapKeys, setTerrain, makeLocator } from './map.js';
+import { PLACES_OVERLAY, extraBasemap, usable } from './basemaps.js';
 import { makeLayers } from './features.js';
 import { identify, loadRules, renderPanel, stateRuleHtml } from './collect.js';
 import { Pins } from './pins.js';
@@ -13,7 +14,7 @@ import { openLegend, openLayers, openSettings, openRecord, openFire } from './pa
 import { enforceBudget } from './cachebudget.js';
 import { debounce, timeBucket, $, uid, esc } from './util.js';
 
-const state = { theme: DEFAULTS.theme, basemap: DEFAULTS.basemap, layers: { ...DEFAULTS.layers }, terrain: false, hasVector: false, liveFetched: {}, custom: [] };
+const state = { theme: DEFAULTS.theme, basemap: DEFAULTS.basemap, layers: { ...DEFAULTS.layers }, terrain: false, hasVector: false, liveFetched: {}, custom: [], keys: {} };
 
 function applyTheme(theme) {
   state.theme = theme;
@@ -27,12 +28,15 @@ async function main() {
   initSheet();
   applyTheme(await settings.get('theme', DEFAULTS.theme));
   state.basemap = await settings.get('basemap', DEFAULTS.basemap);
+  state.keys = await settings.get('keys', {});
+  const saved = extraBasemap(state.basemap);
+  if (!(state.basemap in BASEMAPS) || (saved && !usable(saved, state.keys))) state.basemap = DEFAULTS.basemap;
   state.layers = { ...DEFAULTS.layers, ...(await settings.get('layers', {})) };
   state.custom = await settings.get('custom', []);
   const view = await settings.get('view', { center: DEFAULTS.center, zoom: DEFAULTS.zoom });
   setStatus(navigator.onLine ? 'online' : 'offline', navigator.onLine ? 'ok' : 'warn');
 
-  const { map, hasVector, ofmError } = await createMap('map', { theme: currentTheme(), basemap: state.basemap, center: view.center, zoom: view.zoom });
+  const { map, hasVector, ofmError } = await createMap('map', { theme: currentTheme(), basemap: state.basemap, center: view.center, zoom: view.zoom, keys: state.keys });
   state.hasVector = hasVector;
   if (!hasVector) toast(`Vector basemap unavailable (${ofmError}); using USGS Topo`, 5000);
   window.hmMap = map; // for tests and the console
@@ -52,6 +56,7 @@ async function main() {
   function applyLayer(k, on) {
     state.layers[k] = on;
     const vis = on ? 'visible' : 'none';
+    if (k === 'places') map.setLayoutProperty(`bm-${PLACES_OVERLAY.id}`, 'visibility', vis);
     if (k === 'padus') for (const id of ['padus-fill', 'padus-line']) map.setLayoutProperty(id, 'visibility', vis);
     if (k === 'smaWest') map.setLayoutProperty('sma-west-fill', 'visibility', vis);
     if (k === 'smaRaster') map.setLayoutProperty('sma-raster', 'visibility', vis);
@@ -153,6 +158,14 @@ async function main() {
     setBasemap: (b) => { state.basemap = b; settings.set('basemap', b); setBasemap(map, b, hasVector); },
     setTerrain: (on) => { state.terrain = on; setTerrain(map, on); $('#btn-terrain').classList.toggle('on', on); },
     setLayer: applyLayer, addCustom, removeCustom,
+    setKey: async (name, value) => {
+      state.keys = { ...state.keys, [name]: value.trim() };
+      if (!state.keys[name]) delete state.keys[name];
+      await settings.set('keys', state.keys);
+      setBasemapKeys(map, state.keys);
+      const cur = extraBasemap(state.basemap);
+      if (cur && !usable(cur, state.keys)) actions.setBasemap(DEFAULTS.basemap);
+    },
     setTheme: (t) => { settings.set('theme', t); applyTheme(t); },
     importFile: () => pickFile({ pinsCtl: pins, linesCtl: lines }),
     exportGpx: () => exportGpx(pins.items, lines.items), exportKml: () => exportKml(pins.items, lines.items),

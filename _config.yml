@@ -4,6 +4,7 @@ exclude:
   - package-lock.json
   - capacitor.config.json
   - scripts
+  - tests
   - ios
   - android
   - www

@@ -1,6 +1,7 @@
 // Layers panel (with live badges), the pin legend, settings with the storage meter, and the record sheets.
 import { PIN_TYPES, PADUS_LABELS, PADUS_COLORS, SMA_LABELS, SMA_COLORS, pinIconDataUrl } from './style.js';
-import { BASEMAPS } from './map.js';
+import { BUILTIN_BASEMAPS } from './map.js';
+import { SHOWN_BASEMAPS, usable } from './basemaps.js';
 import { APP_NAME, APP_VERSION, LIVE_TTL } from './config.js';
 import { fmtBytes, fmtDate, esc, h, $ } from './util.js';
 import { openSheet, toast } from './ui.js';
@@ -22,12 +23,22 @@ export function openLegend() {
     <h3>Live</h3><div class="legend"><div class="lg sw"><span class="swatch" style="background:#ff6d00;border:2px solid #d50000"></span>Wildfire perimeter (NIFC)</div><div class="lg sw"><span class="swatch" style="background:#9ecae1"></span>Snow depth (NOHRSC)</div><div class="lg sw"><span class="swatch" style="background:#41ab5d"></span>Rain, last 24 h (NWS)</div></div>` });
 }
 
+// Basemap chips in groups: the built-in four (saved with offline areas), then the online-only list of js/basemaps.js.
+function basemapPicker(state) {
+  const chip = (k, label, off) => `<label class="chip"><input type="radio" name="basemap" value="${k}"${state.basemap === k ? ' checked' : ''}${off ? ' disabled' : ''}> ${esc(label)}</label>`;
+  const groups = new Map([['OpenFreeMap and USGS (these can be saved offline)', Object.entries(BUILTIN_BASEMAPS).map(([k, v]) => chip(k, v, k === 'vector' && !state.hasVector))]]);
+  for (const b of SHOWN_BASEMAPS) groups.set(b.group, [...(groups.get(b.group) || []), chip(b.id, b.name, !usable(b, state.keys))]);
+  const html = [...groups].map(([g, chips]) => `<p class="muted">${esc(g)}</p><div class="row wrap">${chips.join('')}</div>`).join('');
+  return `${html}<p class="muted">The Esri, CARTO and other maps come from the list in the HCMGIS QGIS plugin. They work online only, and offline areas do not save them. CARTO's need a free key: Settings and data.</p>`;
+}
+
 export function openLayers(state, actions) {
   const live = (k) => { const t = state.liveFetched[k]; return t ? `<span class="badge live">live · ${fmtDate(t)} · refresh after ${Math.round(LIVE_TTL[k] / 60000)} min</span>` : '<span class="badge">live</span>'; };
   const row = (k, label, note = '') => `<label class="lrow"><input type="checkbox" name="${k}"${state.layers[k] ? ' checked' : ''}> <span>${label}${note ? `<br><span class="muted">${note}</span>` : ''}</span></label>`;
   const body = h(`<div class="layers">
     <h3>Basemap</h3>
-    <div class="row wrap">${Object.entries(BASEMAPS).map(([k, v]) => `<label class="chip"><input type="radio" name="basemap" value="${k}"${state.basemap === k ? ' checked' : ''}${k === 'vector' && !state.hasVector ? ' disabled' : ''}> ${esc(v)}</label>`).join('')}</div>
+    ${basemapPicker(state)}
+    ${row('places', 'Place names and boundaries on top', 'Esri World Boundaries and Places; online only')}
     <label class="lrow"><input type="checkbox" name="terrain"${state.terrain ? ' checked' : ''}> <span>3D terrain<br><span class="muted">Loads terrain tiles only while on; tilt with two fingers.</span></span></label>
     <h3>Land ownership</h3>
     ${row('padus', 'PAD-US manager type (vector tiles, national)', 'USGS PAD-US 4.1')}
@@ -74,6 +85,9 @@ export async function openSettings(state, actions) {
     </table>
     <div class="row wrap"><label>Cache budget <select name="cap">${[50, 100, 150, 250, 500, 1000].map((mb) => `<option value="${mb}"${Math.round(r.cap / 1048576) === mb ? ' selected' : ''}>${mb} MB</option>`).join('')}</select></label>
       <button class="btn" data-act="evict">Trim to budget now</button><button class="btn" data-act="clear">Clear browsing cache</button></div>
+    <h3>Basemap keys</h3>
+    <p class="muted">CARTO's basemaps need a free key for non-commercial use (up to 5 million tiles a month). Request one at <a href="https://carto.com/basemaps/apikey" target="_blank" rel="noopener">carto.com/basemaps/apikey</a> and paste it here. It stays on this phone and is sent only to CARTO.</p>
+    <div class="row"><input name="cartoKey" class="grow" placeholder="CARTO key" autocomplete="off" value="${esc(state.keys?.carto || '')}"><button class="btn" data-act="savekey">Save</button></div>
     <h3>Appearance</h3>
     <div class="row wrap">${['auto', 'light', 'dark'].map((t) => `<label class="chip"><input type="radio" name="theme" value="${t}"${state.theme === t ? ' checked' : ''}> ${t}</label>`).join('')}</div>
     <p class="muted">Units: miles, feet, degrees Fahrenheit.</p>
@@ -81,7 +95,7 @@ export async function openSettings(state, actions) {
     <div class="row wrap"><button class="btn" data-act="import">Import GPX / KML / backup</button><button class="btn" data-act="gpx">Export GPX</button><button class="btn" data-act="kml">Export KML</button><button class="btn" data-act="backup">Backup (JSON)</button><label><input type="checkbox" name="photos" checked> include photos</label></div>
     <p class="muted">Nothing leaves this phone unless you export it. The map services only ever see the area you look at.</p>
     <h3>About</h3>
-    <p class="muted">${APP_NAME} ${APP_VERSION}. Collecting rules are general guidance with their sources, not legal advice: confirm with the office before you collect. Basemap: OpenFreeMap / OpenMapTiles / OpenStreetMap contributors; USGS The National Map. Ownership: USGS PAD-US, BLM SMA. Claims: BLM MLRS. Records: USGS MRDS, Paleobiology Database. Live: NIFC, NOAA.</p>
+    <p class="muted">${APP_NAME} ${APP_VERSION}. Collecting rules are general guidance with their sources, not legal advice: confirm with the office before you collect. Basemap: OpenFreeMap / OpenMapTiles / OpenStreetMap contributors; USGS The National Map. More basemaps: Esri, CARTO, F4map, HCMC OneMap (list from the HCMGIS QGIS plugin). Ownership: USGS PAD-US, BLM SMA. Claims: BLM MLRS. Records: USGS MRDS, Paleobiology Database. Live: NIFC, NOAA.</p>
   </div>`);
   body.addEventListener('change', async (e) => {
     if (e.target.name === 'cap') { await settings.set('cacheCapMB', +e.target.value); toast(`Budget set to ${e.target.value} MB`); }
@@ -91,6 +105,7 @@ export async function openSettings(state, actions) {
     const act = e.target.dataset.act; if (!act) return;
     if (act === 'evict') { const x = await enforceBudget(); toast(`Evicted ${x.evicted} items (${fmtBytes(x.bytes)})`); openSettings(state, actions); }
     if (act === 'clear') { const n = await clearBrowsedCache(); toast(`Cleared ${n} cached items`); openSettings(state, actions); }
+    if (act === 'savekey') { await actions.setKey('carto', $('[name=cartoKey]', body).value); toast(state.keys.carto ? 'CARTO key saved on this phone' : 'CARTO key removed'); }
     if (act === 'import') actions.importFile();
     if (act === 'gpx') actions.exportGpx();
     if (act === 'kml') actions.exportKml();

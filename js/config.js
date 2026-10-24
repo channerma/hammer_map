@@ -3,7 +3,7 @@
 
 export const APP_NAME = 'Hammer Map';
 export const APP_VERSION = '0.1.0';
-export const SW_VERSION = 'v1';
+export const SW_VERSION = 'v2';
 
 export const MAPLIBRE = {
   js: 'https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/5.24.0/maplibre-gl.js',
@@ -62,11 +62,11 @@ export const DATA = {
 
 export const DEFAULTS = {
   theme: 'auto',
-  basemap: 'vector', // vector | topo | imagery | imagerytopo
+  basemap: 'vector', // vector | topo | imagery | imagerytopo, or an id from js/basemaps.js
   cacheCapMB: 150,
   center: [-84.27, 36.01], // Oak Ridge, Tennessee
   zoom: 11,
-  layers: { padus: true, smaWest: true, smaRaster: false, claimsOpen: true, claimsClosed: true, mrds: false, pbdb: false, fire: false, snow: false, rain: false },
+  layers: { places: false, padus: true, smaWest: true, smaRaster: false, claimsOpen: true, claimsClosed: true, mrds: false, pbdb: false, fire: false, snow: false, rain: false },
 };
 
 // Photo storage limits (persistent data stays small).

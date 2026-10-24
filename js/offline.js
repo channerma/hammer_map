@@ -6,6 +6,7 @@ import { tilesInBounds, lonLatToMeters, fmtBytes, fmtDate, uid, esc, h, $, timeB
 import { areas as areaDB, settings } from './db.js';
 import { pinTiles, unpinArea, averageTileBytes, report, capBytes } from './cachebudget.js';
 import { openSheet, toast, formValues } from './ui.js';
+import { extraBasemap } from './basemaps.js';
 
 const Z_MIN = 8;
 const EMPTY = { type: 'FeatureCollection', features: [] };
@@ -35,7 +36,7 @@ export class Offline {
     const basemap = this.getBasemap();
     const ofmTemplate = await settings.get('ofmTemplate');
     const plans = [];
-    if (opts.basemap) {
+    if (opts.basemap && !extraBasemap(basemap)) { // the online-only basemaps of js/basemaps.js are never saved
       if (basemap === 'vector' && this.hasVector && ofmTemplate) plans.push({ key: 'ofm', label: 'Vector basemap (OpenFreeMap)', template: ofmTemplate, tiles: tilesRange(bounds, Z_MIN, Math.min(maxZ, 14)), parallel: OFM_DOWNLOAD.parallel });
       else plans.push({ key: 'usgs', label: `USGS ${basemap === 'vector' ? 'topo' : basemap} basemap`, template: URLS[{ topo: 'usgsTopo', imagery: 'usgsImagery', imagerytopo: 'usgsImageryTopo', vector: 'usgsTopo' }[basemap]], tiles: tilesRange(bounds, Z_MIN, maxZ) });
     }
@@ -106,11 +107,16 @@ export class Offline {
     }
   }
   showBox(bounds) {
-    const [w, s, e, n] = bounds;
+    const [w, s, e, n] = bounds || []; // null clears the box (the sheet's close)
     this.map.getSource('areabox')?.setData(bounds ? { type: 'Feature', geometry: { type: 'Polygon', coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] }, properties: {} } : EMPTY);
   }
 
   // ---- sheet ------------------------------------------------------------------
+  basemapCheck() {
+    const extra = extraBasemap(this.getBasemap());
+    if (extra) return `<label class="muted"><input type="checkbox" name="basemap" disabled> Basemap: ${esc(extra.name)} is online only. Switch to OpenFreeMap or USGS to save a basemap.</label>`;
+    return `<label><input type="checkbox" name="basemap" checked> Basemap (${this.getBasemap() === 'vector' && this.hasVector ? 'vector' : 'USGS raster'})</label>`;
+  }
   async openSheet() {
     let bounds = this.viewBounds();
     const list = await areaDB.all();
@@ -121,7 +127,7 @@ export class Offline {
       <div class="row wrap"><button class="btn" data-act="view">Use current view</button><button class="btn" data-act="box">Draw a box</button><span class="muted bounds"></span></div>
       <div class="row wrap"><label>Max zoom <select name="maxZoom">${[12, 13, 14, 15, 16].map((z) => `<option value="${z}"${z === 14 ? ' selected' : ''}>${z}${z === 14 ? ' (streets, 1:36k)' : z === 16 ? ' (finest)' : ''}</option>`).join('')}</select></label></div>
       <div class="row wrap checks">
-        <label><input type="checkbox" name="basemap" checked> Basemap (${this.getBasemap() === 'vector' && this.hasVector ? 'vector' : 'USGS raster'})</label>
+        ${this.basemapCheck()}
         <label><input type="checkbox" name="ownership" checked> Ownership</label>
         <label><input type="checkbox" name="claims" checked> Mining claims</label>
         <label><input type="checkbox" name="records"> Records (MRDS, fossils)</label>

@@ -13,7 +13,7 @@ On a phone, open that address and choose "Add to Home Screen" to install it.
 
 | Feature | Screenshot |
 |---|---|
-| **Map.** MapLibre GL JS 5.24.0 on the GPU. Basemaps: OpenFreeMap Liberty (vector tiles, default), USGS Topo, USGS Imagery, USGS Imagery + Topo (raster). Switching basemaps toggles layer visibility inside one style, nothing is rebuilt. Scale bar in miles and feet. | [01](screenshots/01-map-ownership-oak-ridge.png) |
+| **Map.** MapLibre GL JS 5.24.0 on the GPU. Basemaps: OpenFreeMap Liberty (vector tiles, default), USGS Topo, USGS Imagery, USGS Imagery + Topo (raster). Switching basemaps toggles layer visibility inside one style, nothing is rebuilt. Scale bar in miles and feet. More basemaps from the HCMGIS list, online only: nine from Esri (imagery, topographic, street and others), three from CARTO with a free key, F4 Map and HCMC OneMap, plus an Esri place-name overlay (see "More basemaps"). | [01](screenshots/01-map-ownership-oak-ridge.png), [10](screenshots/10-esri-imagery-place-names.png), [11](screenshots/11-basemap-picker.png) |
 | **Land ownership.** USGS PAD-US 4.1 manager type as vector tiles nationwide (federal, state, local, tribal, private conservation, private, district, unknown), plus federal agency fills (BLM, Forest Service, NPS, FWS, Reclamation, DoD, BIA, DOE) from the West-US Surface Management Agency vector tiles; a national BLM SMA raster is the opt-in fallback. Translucent fills with a legend. | [01](screenshots/01-map-ownership-oak-ridge.png), [02](screenshots/02-map-ownership-claims-tonopah.png) |
 | **Mining claims.** BLM MLRS claims from zoom 11: open claims (purple outline, light fill; stacked claims darken) and claims closed within the past year (dashed). Tap for the case name, serial number, claim type, disposition, acres and date, with a link to MLRS for the claimant. | [02](screenshots/02-map-ownership-claims-tonopah.png) |
 | **Can I collect here?** Tap any place or pin: the land manager and unit (PAD-US and BLM SMA at the point), public-access and GAP codes, any claim there, then the collecting rules for that manager from `rules.json` with their sources. | [03](screenshots/03-can-i-collect-here.png), [03b](screenshots/03b-can-i-collect-here-tennessee.png) |
@@ -63,7 +63,7 @@ offers one. Browsers allow geolocation, the service worker and camera capture on
 
 ## Data sources
 
-All public, no keys. Every URL below answered a real request from the build machine on 2026-10-24 (UTC times in
+All public. None needs a key, except the optional CARTO basemaps (see "More basemaps"). Every URL below answered a real request from the build machine on 2026-10-24 (UTC times in
 parentheses). Those that failed or were set aside are listed afterwards.
 
 | Use | URL | Result |
@@ -96,6 +96,48 @@ Checked and not used:
 - PAD-US `Manager_Type` FeatureServer envelope queries (1,000 records a page) are too heavy for drawing; the vector tiles replace them. Other PAD-US services found on the USGS page (Public Access, Fee Managers, Federal Management Agencies, GAP status) were not needed.
 - `https://energy.usgs.gov/arcgis/rest/services/MRData/Mineral_Resource_Data_System/FeatureServer/0` → 404 "Layer not found".
 - NOHRSC's WMS (`.../MapServer/WMSServer`) returned a blank image for the same area where the export had snow; the export endpoint is used instead.
+
+## More basemaps (from HCMGIS)
+
+The [HCMGIS](https://github.com/opengeoshub/HCMGIS) QGIS plugin lists 33 raster tile services (`basemap_names` and
+`basemap_urls` in `hcmgis_library.py`, commit f11ee9a of 2026-08-31). They are XYZ tile addresses, which QGIS opens
+through its WMS provider. On 2026-10-24 (21:07 UTC) the build machine asked each for one tile, sending this site's
+origin, and read the answer's cross-origin header. MapLibre can only draw tiles that send one. `js/basemaps.js` holds
+the result.
+
+- **Shown, online only: 11 basemaps and one overlay.** These answered with images and `Access-Control-Allow-Origin: *`,
+  and each drew in headless Chromium with no tile errors (21:18 UTC): Esri Imagery, Topographic, Street, National
+  Geographic, Terrain, Shaded Relief, Physical, Light Gray and Dark Gray; F4 Map 2D; HCMC OneMap, which covers Ho Chi
+  Minh City only. Esri Boundaries and Places is transparent, so it is the overlay "Place names and boundaries on top".
+  Credits are each Esri service's own `copyrightText`. Each maximum zoom is the deepest level that returned real tiles
+  over Oak Ridge; MapLibre enlarges the last level beyond it.
+- **Shown once you add a key: 3.** CARTO Light, Dark and Voyager answer every request without a key with an "API KEY
+  REQUIRED" picture (21:12 UTC). CARTO's page offers a free key for non-commercial use, up to 5 million requests a
+  month, added to each tile address as `?key=` (21:13 UTC). Request one at https://carto.com/basemaps/apikey and paste
+  it in Settings and data, under Basemap keys. It stays on the phone and goes only to CARTO.
+- **In the list but switched off: 5.** Google Maps, Google Satellite, Google Satellite Hybrid, Google Terrain Hybrid
+  and Bing Virtual Earth answer, but the providers' terms allow these tiles only through their own APIs with a key
+  ([Google Maps Platform terms](https://cloud.google.com/maps-platform/terms)). To show one anyway, delete its `off`
+  field in `js/basemaps.js`.
+- **Not added, because they did not work from here: 13.**
+
+  | HCMGIS name | What happened |
+  |---|---|
+  | Esri DeLorme | 404 "Service not found" |
+  | Esri Ocean | 500 "Could not find a service with the name 'MapServer/Ocean_Basemap'" |
+  | Stamen Toner, Toner Background, Toner Hybrid, Toner Lite, Terrain, Terrain Background, Watercolor | `a.tile.stamen.com` and `c.tile.stamen.com` no longer resolve. Stamen's maps moved to Stadia Maps in 2023, which needs an account. |
+  | NASA Black Marble (`realearth.ssec.wisc.edu`) | timed out twice, over http and https |
+  | Wikimedia Maps | 403 for an outside site |
+  | Vietbando Maps | http only, with no cross-origin header; the https address gave 404 |
+  | Vgrid Tilecode | connection reset, twice |
+
+Offline areas save only the OpenFreeMap and USGS basemaps. OpenFreeMap publishes its offline limit, and USGS maps are
+public domain. The terms of the other basemaps were not checked for bulk download, so the app does not save them and
+the service worker does not keep their tiles.
+
+How it was checked: `tests/basemaps_browser.py` serves the repository locally, switches to each basemap, waits for the
+map to settle and counts tiles and errors per source. It also checks the overlay, that a saved CARTO key reaches the
+tile address and is removed again, and that the offline sheet skips an online-only basemap.
 
 ## The rules file
 
@@ -148,7 +190,7 @@ city/county land, Tennessee WMAs. Those entries say "ask" and state no rule.
 tiles cache-first with byte accounting) · `rules.json` · `js/config.js` URLs and limits · `js/util.js` tile maths,
 geodesy, units · `js/db.js` IndexedDB · `js/cachebudget.js` accounting, LRU eviction, the storage report ·
 `js/style.js` the MapLibre style and runtime pin icons · `js/features.js` data-tile fetching with abort and caching ·
-`js/map.js` map, basemaps, terrain, GPS · `js/collect.js` identify and the rules panel · `js/pins.js` · `js/draw.js`
+`js/map.js` map, basemaps, terrain, GPS · `js/basemaps.js` the basemaps from the HCMGIS list · `js/collect.js` identify and the rules panel · `js/pins.js` · `js/draw.js`
 lines and profiles · `js/terrain.js` terrarium decoding · `js/io.js` + `workers/parse.js` GPX/KML in a worker, backup ·
 `js/offline.js` area downloads · `js/panels.js` layers, legend, settings, record sheets · `js/ui.js` sheet and toasts ·
 `js/app.js` wiring.

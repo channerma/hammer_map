@@ -1,12 +1,16 @@
 // Map creation, basemap switching, 3D terrain on demand, and the GPS locator.
 import { URLS, ATTRIBUTION } from './config.js';
 import { buildStyle, makeIcons } from './style.js';
+import { SHOWN_BASEMAPS, basemapTiles } from './basemaps.js';
 import { settings, areas } from './db.js';
 import { withTimeout, circlePolygon } from './util.js';
 
-export const BASEMAPS = {
+export const BUILTIN_BASEMAPS = {
   vector: 'OpenFreeMap Liberty (vector)', topo: 'USGS Topo', imagery: 'USGS Imagery', imagerytopo: 'USGS Imagery + Topo',
 };
+// The built-in four can be saved for offline use; the rest (js/basemaps.js) are online only.
+export const BASEMAPS = { ...BUILTIN_BASEMAPS, ...Object.fromEntries(SHOWN_BASEMAPS.map((b) => [b.id, b.name])) };
+const rasterLayerId = (k) => (k in BUILTIN_BASEMAPS ? `usgs-${k}` : `bm-${k}`);
 
 // Network-first for the basemap style and tile template (the service worker answers from cache offline).
 export async function loadOfm() {
@@ -27,9 +31,9 @@ export async function loadOfm() {
   }
 }
 
-export async function createMap(container, { theme, basemap, center, zoom }) {
+export async function createMap(container, { theme, basemap, center, zoom, keys }) {
   const ofm = await loadOfm();
-  const style = buildStyle({ ofm: ofm.style, ofmTemplate: ofm.template, theme });
+  const style = buildStyle({ ofm: ofm.style, ofmTemplate: ofm.template, theme, keys });
   const map = new maplibregl.Map({
     container, style, center, zoom, attributionControl: false, maxPitch: 70, fadeDuration: 0, pitchWithRotate: true,
   });
@@ -44,11 +48,17 @@ export async function createMap(container, { theme, basemap, center, zoom }) {
 }
 
 export function setBasemap(map, name, hasVector) {
+  if (!(name in BASEMAPS)) name = 'vector';
   const ids = map.getStyle().metadata?.ofmLayerIds || [];
   const vector = name === 'vector' && hasVector;
   for (const id of ids) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vector ? 'visible' : 'none');
   const want = vector ? null : (name === 'vector' ? 'topo' : name);
-  for (const r of ['topo', 'imagery', 'imagerytopo']) map.setLayoutProperty(`usgs-${r}`, 'visibility', want === r ? 'visible' : 'none');
+  for (const r of Object.keys(BASEMAPS)) if (r !== 'vector') map.setLayoutProperty(rasterLayerId(r), 'visibility', want === r ? 'visible' : 'none');
+}
+
+// A key typed in Settings reaches the basemaps that need it without rebuilding the style.
+export function setBasemapKeys(map, keys) {
+  for (const b of SHOWN_BASEMAPS) if (b.key) map.getSource(`bm-${b.id}`)?.setTiles([basemapTiles(b, keys)]);
 }
 
 export function setTerrain(map, on) {

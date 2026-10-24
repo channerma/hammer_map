@@ -2,6 +2,7 @@
 // (hidden until chosen), ownership, claims, records, live layers, lines and pins. Basemap switches toggle
 // visibility, so nothing is rebuilt and nothing is refetched. Pins are symbol layers with icons drawn at runtime.
 import { URLS, ATTRIBUTION } from './config.js';
+import { SHOWN_BASEMAPS, PLACES_OVERLAY, basemapTiles } from './basemaps.js';
 
 // PAD-US "Manager Type" vector tiles carry one attribute, _symbol, in the order of the service's own style.
 export const PADUS_SYMBOLS = ['TRIB', 'FED', 'JNT', 'LOC', 'NGO', 'PVT', 'DIST', 'STAT', 'TERR', 'UNK'];
@@ -38,7 +39,7 @@ const EMPTY = { type: 'FeatureCollection', features: [] };
 const matchExpr = (symbols, colors) => ['match', ['coalesce', ['get', '_symbol'], -1], ...symbols.flatMap((s, i) => [i, colors[s]]), '#999999'];
 const geo = (opts = {}) => ({ type: 'geojson', data: EMPTY, ...opts });
 
-export function buildStyle({ ofm, ofmTemplate, theme }) {
+export function buildStyle({ ofm, ofmTemplate, theme, keys = {} }) {
   const sources = {}, layers = [], ofmLayerIds = [];
   if (ofm) {
     for (const [k, v] of Object.entries(ofm.sources)) {
@@ -50,8 +51,10 @@ export function buildStyle({ ofm, ofmTemplate, theme }) {
   } else {
     layers.push({ id: 'background', type: 'background', paint: { 'background-color': theme === 'dark' ? '#0f1a14' : '#e9efe6' } });
   }
-  const raster = (id, url) => { sources[id] = { type: 'raster', tiles: [url], tileSize: 256, maxzoom: 16, attribution: ATTRIBUTION.usgs }; layers.push({ id, type: 'raster', source: id, layout: { visibility: 'none' } }); };
+  const raster = (id, url, maxzoom = 16, attribution = ATTRIBUTION.usgs) => { sources[id] = { type: 'raster', tiles: [url], tileSize: 256, maxzoom, attribution }; layers.push({ id, type: 'raster', source: id, layout: { visibility: 'none' } }); };
   raster('usgs-topo', URLS.usgsTopo); raster('usgs-imagery', URLS.usgsImagery); raster('usgs-imagerytopo', URLS.usgsImageryTopo);
+  for (const b of SHOWN_BASEMAPS) raster(`bm-${b.id}`, basemapTiles(b, keys), b.maxzoom, b.attribution); // js/basemaps.js, hidden until chosen
+  raster(`bm-${PLACES_OVERLAY.id}`, PLACES_OVERLAY.url, PLACES_OVERLAY.maxzoom, PLACES_OVERLAY.attribution); // overlay, Layers > Basemap
 
   // Ownership
   sources.padus = { type: 'vector', tiles: [URLS.padusTiles], minzoom: 0, maxzoom: 16, attribution: ATTRIBUTION.padus };
