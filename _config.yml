@@ -1,0 +1,10 @@
+# GitHub Pages builds the site from this folder with Jekyll. The native-app files are not part of the site.
+exclude:
+  - package.json
+  - package-lock.json
+  - capacitor.config.json
+  - scripts
+  - ios
+  - android
+  - www
+  - node_modules

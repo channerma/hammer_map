@@ -200,17 +200,48 @@ Headless Chromium 156 through Playwright 1.64, phone viewport 390×844 at
 - `http.server` serves uncompressed files; a real host with gzip or brotli will transfer the shell in well under
   100 KB.
 
-## Build it as an application
+## Build the iPhone app on a Mac
 
-Two common ways to turn a web app like this into an installed application; neither has been tried yet:
-- **Capacitor** (iPhone and Android, built in Xcode and Android Studio) wraps the web files in a native shell and
-  offers native GPS, camera and file plugins. It copies a web folder into the native project, so move the web files
-  into a folder of their own (for example `www/`) and name it as `webDir` in its config.
-- **Tauri** or **Electron** make a macOS desktop application from the same files; Tauri's is the smaller.
+The repository is set up for [Capacitor](https://capacitorjs.com) 8.5.3, which wraps the web app in a native
+iPhone app. `npm run build` copies the web files into `www/` with MapLibre bundled from npm instead of the CDN,
+so the app starts with no signal; the website at the repository root is unchanged.
 
-Check first whether the service worker (the tile cache and offline mode) runs inside an iPhone app's web view:
-Apple limits service workers there to app-bound domains, so this may need setup or a native tile cache. Test offline
-mode and storage on a physical phone, which has not been done yet (see the limits above).
+Needs: Xcode from the App Store (open it once to finish its setup) and Node 22 or newer
+(https://nodejs.org, or `brew install node`). No CocoaPods: the iOS project uses Swift Package Manager.
+
+    git clone git@github.com:channerma/hammer_map.git    # or git pull in an existing clone
+    cd hammer_map
+    npm install
+    npm run ios:add    # once: makes the ios/ project and adds the location, camera and photo prompts
+    npm run ios        # copies the web app into the project and opens Xcode
+
+In Xcode:
+1. In the left column click **App** (the blue icon), then the **App** target, then **Signing & Capabilities**.
+   Under Team choose **Add an Account**, sign in with your Apple ID, and pick your **(Personal Team)**. If Xcode
+   says the bundle identifier is taken, add your initials to it.
+2. Plug in the iPhone, unlock it and tap **Trust**. On the phone turn on **Settings, Privacy & Security,
+   Developer Mode** (it restarts).
+3. Pick the iPhone at the top of Xcode and press **Run**. The first time, on the phone open **Settings, General,
+   VPN & Device Management**, tap your Apple ID and **Trust**. (An iPhone simulator needs no signing.)
+
+With a free Apple ID the app runs for 7 days, then press Run again; the Apple Developer Program gives a year and
+TestFlight. After changing the web files run `npm run ios` again, then Run. Commit the `ios/` folder after
+`npm run ios:add` so Xcode's settings are kept. Android: `npm install @capacitor/android@8.5.3`, then
+`npx cap add android` and `npx cap open android` (Android Studio).
+
+What to expect in the app, likely but not yet seen on a phone:
+- Everything online works as on the web: maps, ownership, claims, records, live layers, pins, GPX and KML import.
+  Pins and settings stay inside the app.
+- The app opens with no signal (its files and MapLibre are inside it), but **downloaded map areas probably do not
+  show offline**: they rely on the service worker, and WebKit runs service workers only for web pages from
+  https addresses, not for an app's own files. For offline areas use the web version installed from Safari, or
+  store tiles natively later.
+- Exports (GPX, KML, the backup) use browser downloads, which an iPhone app's web view may not offer; check them.
+
+Tested on 2026-10-24 (on Linux, not on a Mac): `npm install` and `npm run build`; `npm run ios:add` made the
+Xcode project (Swift Package Manager) and the prompts, and the Info.plist parses; the built `www/` opened in
+headless Chromium with the CDN blocked started the map from the bundled MapLibre 5.24.0 with no page errors.
+Not tested: building in Xcode and running on a phone.
 
 ## History
 
